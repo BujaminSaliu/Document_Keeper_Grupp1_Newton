@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="288.0" prefWidth="440.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+   <children>
+      <BorderPane layoutX="90.0" layoutY="44.0" prefHeight="288.0" prefWidth="440.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <right>
+            <VBox prefHeight="250.0" prefWidth="156.0" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets right="20.0" />
+               </BorderPane.margin>
+            </VBox>
+         </right>
+         <center>
+            <VBox prefHeight="255.0" prefWidth="284.0" BorderPane.alignment="CENTER">
+               <children>
+                  <ListView prefHeight="209.0" prefWidth="227.0">
+                     <VBox.margin>
+                        <Insets left="20.0" right="20.0" />
+                     </VBox.margin>
+                  </ListView>
+               </children>
+            </VBox>
+         </center>
+         <bottom>
+            <Button alignment="BOTTOM_LEFT" mnemonicParsing="false" text="OK" textAlignment="CENTER" BorderPane.alignment="BOTTOM_RIGHT">
+               <BorderPane.margin>
+                  <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
+               </BorderPane.margin>
+            </Button>
+         </bottom>
+         <top>
+            <HBox prefHeight="42.0" prefWidth="440.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Filer:">
+                     <HBox.margin>
+                        <Insets left="20.0" top="20.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label text="Välj namn tagg:">
+                     <HBox.margin>
+                        <Insets left="230.0" top="20.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+         </top>
+      </BorderPane>
+   </children>
+</AnchorPane>
