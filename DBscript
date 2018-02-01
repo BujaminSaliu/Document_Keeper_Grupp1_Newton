@@ -1,11 +1,3 @@
-create table "ROOT".FOLDERS
-(
-ID INTEGER not null primary key GENERATED ALWAYS AS IDENTITY(START
-WITH 1, INCREMENT BY 1),
-NAME VARCHAR(128) not null,
-DATE DATE not null default CURRENT_DATE,
-CONSTRAINT unique_unik1 UNIQUE (NAME)
-);
 create table "ROOT".FILES
 (
 ID INTEGER not null primary key GENERATED ALWAYS AS IDENTITY(START
@@ -14,9 +6,8 @@ NAME VARCHAR(128) not null,
 DATE DATE not null default CURRENT_DATE,
 SIZE DOUBLE,
 TYPE VARCHAR(128) not null,
-OCR VARCHAR(4096),
-FOLDER_ID INTEGER not null,
-CONSTRAINT unique_unik2 UNIQUE (NAME, FOLDER_ID)
+PATH VARCHAR(128),
+CONSTRAINT unique_unik2 UNIQUE (NAME)
 );
 create table "ROOT".TAGS
 (
@@ -37,9 +28,6 @@ FILE_A INTEGER not null,
 FILE_B INTEGER not null,
 CONSTRAINT unique_unik5 UNIQUE (FILE_A, FILE_B)
 );
-Alter Table ROOT.FILES
-add FOREIGN KEY (FOLDER_ID)
-References ROOT.FOLDERS (ID);
 Alter Table ROOT.FILE_HAS_TAGS
 add FOREIGN KEY (FILE_ID)
 References ROOT.FILES (ID);
