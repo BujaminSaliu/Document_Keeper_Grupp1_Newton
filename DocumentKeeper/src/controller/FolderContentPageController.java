@@ -5,9 +5,16 @@
  */
 package controller;
 
+import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
  * FXML Controller class
@@ -16,9 +23,21 @@ import javafx.fxml.Initializable;
  */
 public class FolderContentPageController implements Initializable {
 
-    /**
-     * Initializes the controller class.
-     */
+    @FXML
+    private Button button;
+    
+    
+    @FXML
+    private void handleButtonAction(ActionEvent event) {        
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose your files");
+        List <File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
+        fileChooser.getExtensionFilters().addAll(
+        new ExtensionFilter("PDF Files", "*.pdf"));
+        
+        System.out.println(selectedFiles.get(0).getName());
+    }
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO

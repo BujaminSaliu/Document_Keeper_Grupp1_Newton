@@ -19,7 +19,8 @@ public class DocumentKeeper extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/StartupPage.fxml"));
+        //Parent root = FXMLLoader.load(getClass().getResource("/fxml/StartupPage.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/FolderContentPage.fxml"));
         
         Scene scene = new Scene(root);
         
