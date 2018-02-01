@@ -83,7 +83,7 @@
                      <children>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                            <children>
-                              <Button fx:id="button" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="50.0" prefWidth="50.0" style="-fx-background-radius: 200; -fx-background-color: none; -fx-border-width: 1; -fx-border-color: black; -fx-border-radius: 200;" text="+">
+                              <Button fx:id="button" mnemonicParsing="false" onAction="#addFileButtonAction" prefHeight="50.0" prefWidth="50.0" style="-fx-background-radius: 200; -fx-background-color: none; -fx-border-width: 1; -fx-border-color: black; -fx-border-radius: 200;" text="+">
                                  <font>
                                     <Font name="SansSerif Regular" size="22.0" />
                                  </font>

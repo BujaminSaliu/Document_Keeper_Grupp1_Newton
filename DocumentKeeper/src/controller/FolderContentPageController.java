@@ -26,16 +26,24 @@ public class FolderContentPageController implements Initializable {
     @FXML
     private Button button;
     
+    List <File> selectedFiles;
     
     @FXML
-    private void handleButtonAction(ActionEvent event) {        
+    private void addFileButtonAction(ActionEvent event) {        
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose your files");
-        List <File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
-        fileChooser.getExtensionFilters().addAll(
-        new ExtensionFilter("PDF Files", "*.pdf"));
+        selectedFiles = fileChooser.showOpenMultipleDialog(null);
+        fileChooser.getExtensionFilters().addAll();
+        try {
+            for (int i = 0; i < selectedFiles.size(); i++) {
+            System.out.println("Selected files: " + selectedFiles.get(i).getName() 
+                    + " Amount of files: "+ selectedFiles.size());
+        }
+        } catch (Exception e) {
+            System.out.println("Canceled");
+        }
         
-        System.out.println(selectedFiles.get(0).getName());
+        
     }
     
     @Override
