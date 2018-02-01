@@ -37,7 +37,7 @@ public class FolderContentPageController implements Initializable {
         try {
             for (int i = 0; i < selectedFiles.size(); i++) {
             System.out.println("Selected files: " + selectedFiles.get(i).getName() 
-                    + " Amount of files: "+ selectedFiles.size());
+                    + "  files amount : "+ selectedFiles.size());
         }
         } catch (Exception e) {
             System.out.println("Canceled");
