@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,16 +35,28 @@ public class FolderContentPageController implements Initializable {
     @FXML
     private Button button;
     
+    List <File> selectedFiles;
+    
+    public static ObservableList<String> oList = FXCollections.observableArrayList();
     
     @FXML
-    private void handleButtonAction(ActionEvent event) throws IOException {        
+
+    private void addFileButtonAction(ActionEvent event) throws IOException {        
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose your files");
-        List <File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
-        fileChooser.getExtensionFilters().addAll(
-        new ExtensionFilter("PDF Files", "*.pdf"));
+        selectedFiles = fileChooser.showOpenMultipleDialog(null);
+        fileChooser.getExtensionFilters().addAll();
+        try {
+            for (int i = 0; i < selectedFiles.size(); i++) {
+            System.out.println("Selected files: " + selectedFiles.get(i).getName() 
+                    + "  files amount : "+ selectedFiles.size());
+            oList.add(selectedFiles.get(i).getName());
+        }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
         
-        System.out.println(selectedFiles.get(0).getName());
         addTag();
     }
     
@@ -64,7 +78,8 @@ public class FolderContentPageController implements Initializable {
             stage.close();
         });
         stage.showAndWait(); // öppnar popUp
- 
+
+
     }
     
     @Override
