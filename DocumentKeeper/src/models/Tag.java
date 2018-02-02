@@ -52,8 +52,8 @@ public class Tag implements Serializable {
     }
     
     @Override
-     public String toString(){ // metod för att skriva ut Tag
+     public String toString(){ 
        System.out.print(this.getName());
-        return this.getName(); // returnerar Stringen name
+        return this.getName(); 
     }
 }

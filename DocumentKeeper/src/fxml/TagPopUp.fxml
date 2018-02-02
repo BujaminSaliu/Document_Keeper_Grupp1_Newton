@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -9,47 +10,63 @@
 
 <AnchorPane id="AnchorPane" prefHeight="288.0" prefWidth="440.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxml.TagPopUpController">
    <children>
-      <BorderPane layoutX="90.0" layoutY="44.0" prefHeight="288.0" prefWidth="440.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BorderPane layoutX="90.0" layoutY="44.0" prefHeight="288.0" prefWidth="440.0" style="-fx-background-color: #1d1d1d;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <right>
             <VBox prefHeight="250.0" prefWidth="156.0" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets right="20.0" />
                </BorderPane.margin>
                <children>
-                  <ListView fx:id="listViewTags" prefHeight="200.0" prefWidth="200.0" />
+                  <ListView fx:id="listViewTags" prefHeight="200.0" prefWidth="200.0" stylesheets="@../style/newCascadeStyleSheet.css">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </ListView>
                </children>
             </VBox>
          </right>
          <center>
             <VBox prefHeight="255.0" prefWidth="284.0" BorderPane.alignment="CENTER">
                <children>
-                  <ListView fx:id="fileListView" prefHeight="209.0" prefWidth="227.0">
+                  <ListView fx:id="fileListView" prefHeight="209.0" prefWidth="227.0" style="-fx-border-color: #636363;" stylesheets="@../style/newCascadeStyleSheet.css">
                      <VBox.margin>
                         <Insets left="20.0" right="20.0" />
                      </VBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
                   </ListView>
                </children>
             </VBox>
          </center>
          <bottom>
-            <Button alignment="BOTTOM_LEFT" mnemonicParsing="false" text="OK" textAlignment="CENTER" BorderPane.alignment="BOTTOM_RIGHT">
+            <Button alignment="BOTTOM_LEFT" mnemonicParsing="false" style="-fx-background-color: black; -fx-border-color: #afafaf; -fx-border-width: 2; -fx-text-fill: #7a7b7c;" stylesheets="@../style/newCascadeStyleSheet.css" text="OK" textAlignment="CENTER" BorderPane.alignment="BOTTOM_RIGHT">
                <BorderPane.margin>
                   <Insets bottom="10.0" left="20.0" right="20.0" top="20.0" />
                </BorderPane.margin>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </Button>
          </bottom>
          <top>
             <HBox prefHeight="42.0" prefWidth="440.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label text="Filer:">
+                  <Label text="Filer:" textFill="#a79a03">
                      <HBox.margin>
-                        <Insets left="20.0" top="20.0" />
+                        <Insets left="20.0" top="16.0" />
                      </HBox.margin>
+                     <font>
+                        <Font name="Code-Light" size="16.0" />
+                     </font>
                   </Label>
-                  <Label text="Välj namn tagg:">
+                  <Label text="Välj namn tagg:" textFill="#a79a03">
                      <HBox.margin>
-                        <Insets left="230.0" top="20.0" />
+                        <Insets left="210.0" top="16.0" />
                      </HBox.margin>
+                     <font>
+                        <Font size="16.0" />
+                     </font>
                   </Label>
                </children>
             </HBox>
