@@ -12,17 +12,17 @@ import java.util.List;
  *
  * @author ramonachantaf
  */
-public class Tags implements Serializable {
+public class Tag implements Serializable {
     
     int id;
     String name;
-    List<Files> files;
+    List<Document> files;
     
-    public Tags(){
+    public Tag(){
         
     }
 
-    public Tags(int id, String name) {
+    public Tag(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -43,13 +43,17 @@ public class Tags implements Serializable {
         this.name = name;
     }
 
-    public List<Files> getFiles() {
+    public List<Document> getFiles() {
         return files;
     }
 
-    public void setFiles(List<Files> files) {
+    public void setFiles(List<Document> files) {
         this.files = files;
     }
     
-    
+    @Override
+     public String toString(){ // metod för att skriva ut Tag
+       System.out.print(this.getName());
+        return this.getName(); // returnerar Stringen name
+    }
 }

@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSetMetaData;
+import java.util.ArrayList;
+import models.Tag;
 /**
  *
  * @author rille
@@ -47,26 +49,34 @@ public class DBConnection {
         }
     }
     
-    public static void selectFromTags()
-    {
+    public static ArrayList<Tag> selectFromTags()
+    {   ArrayList<Tag> tagList = new ArrayList<>();
         try
         {
             stmt = conn.createStatement();
             ResultSet results = stmt.executeQuery("select * from " + "TAGS");
-
+            
+            
             while(results.next())
             {
                 int id = results.getInt(1);
                 String restName = results.getString(2);
                 System.out.println(id + "\t\t" + restName + "\t\t");
+                
+                Tag tag = new Tag(id, restName);
+                tagList.add(tag);
+               
             }
             results.close();
             stmt.close();
+            return tagList;
+            
         }
         catch (SQLException sqlExcept)
         {
             sqlExcept.printStackTrace();
         }
+        return tagList;
     }
     
 }

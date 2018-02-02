@@ -13,18 +13,18 @@ import java.util.List;
  *
  * @author ramonachantaf
  */
-public class Folders implements Serializable {
+public class Folder implements Serializable {
     
     int id;
     String name;
     Date date;
-    List<Files> files;
+    List<Document> files;
     
-    public Folders(){
+    public Folder(){
         
     }
 
-    public Folders(int id, String name, Date date) {
+    public Folder(int id, String name, Date date) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -54,11 +54,11 @@ public class Folders implements Serializable {
         this.date = date;
     }
 
-    public List<Files> getFiles() {
+    public List<Document> getFiles() {
         return files;
     }
 
-    public void setFiles(List<Files> files) {
+    public void setFiles(List<Document> files) {
         this.files = files;
     }
     

@@ -5,9 +5,13 @@
  */
 package controller;
 
-import java.io.File;
+
+
 import java.io.IOException;
+import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -19,11 +23,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
+import models.Document;
+
+
 
 /**
  * FXML Controller class
@@ -37,8 +47,10 @@ public class FolderContentPageController implements Initializable {
     
     List <File> selectedFiles;
     
-    public static ObservableList<String> oList = FXCollections.observableArrayList();
+  
+    public static ObservableList<Document> oList = FXCollections.observableArrayList();
     
+   
     @FXML
 
     private void addFileButtonAction(ActionEvent event) throws IOException {        
@@ -49,9 +61,13 @@ public class FolderContentPageController implements Initializable {
         fileChooser.getExtensionFilters().addAll();
         try {
             for (int i = 0; i < selectedFiles.size(); i++) {
+                Document files = new Document(1,selectedFiles.get(i).getName(),new Date(), "jpg",233.45,"user/desktop/bla.pdf");
+                
+                
             System.out.println("Selected files: " + selectedFiles.get(i).getName() 
                     + "  files amount : "+ selectedFiles.size());
-            oList.add(selectedFiles.get(i).getName());
+            oList.add(files);
+             
         }
         } catch (Exception e) {
             System.out.println(e);
@@ -59,6 +75,8 @@ public class FolderContentPageController implements Initializable {
         
         addTag();
     }
+    
+    // Document måste göras om till objekt nu är det bara en string som visas
     
     @FXML
     private void addTag() throws IOException { // läger till kunder i popUp1
