@@ -6,28 +6,25 @@
 package models;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 /**
  *
  * @author ramonachantaf
  */
-public class Folders implements Serializable {
+public class Tag implements Serializable {
     
     int id;
     String name;
-    Date date;
-    List<Files> files;
+    List<Document> files;
     
-    public Folders(){
+    public Tag(){
         
     }
 
-    public Folders(int id, String name, Date date) {
+    public Tag(int id, String name) {
         this.id = id;
         this.name = name;
-        this.date = date;
     }
 
     public int getId() {
@@ -46,22 +43,17 @@ public class Folders implements Serializable {
         this.name = name;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public List<Files> getFiles() {
+    public List<Document> getFiles() {
         return files;
     }
 
-    public void setFiles(List<Files> files) {
+    public void setFiles(List<Document> files) {
         this.files = files;
     }
     
-    
-    
+    @Override
+     public String toString(){ 
+       //System.out.print(this.getName());
+        return this.getName(); 
+    }
 }
