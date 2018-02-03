@@ -101,8 +101,12 @@ public class Document implements Serializable {
     
     @Override
      public String toString(){ // metod för att skriva ut Document
-       System.out.print(this.getName());
-        return this.getName(); // returnerar Stringen name
+       if(tags.isEmpty()){
+          return this.getName(); 
+       }else{
+            return "\u2713\t"+ this.getName(); 
+       }
+         // returnerar Stringen name
     }
     
 }

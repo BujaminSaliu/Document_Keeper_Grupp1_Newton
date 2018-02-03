@@ -53,7 +53,7 @@ public class Tag implements Serializable {
     
     @Override
      public String toString(){ 
-       System.out.print(this.getName());
+       //System.out.print(this.getName());
         return this.getName(); 
     }
 }

@@ -50,3 +50,21 @@ and open the template in the editor.
 #addFileButton:active{
      -fx-background-color: #fcfe6c;
 }
+
+#okButton {
+    -fx-background-color: black;
+    -fx-border-color: #afafaf;
+    -fx-border-width:1;
+    -fx-text-fill:#7a7b7c;
+}
+
+#okButton:hover{
+  -fx-border-color:#fcfe6c;
+  -fx-text-fill:#fcfe6c;
+}
+
+
+#okButton:active{
+  -fx-border-color:#fcfe6c;
+  -fx-text-fill:#fcfe6c;
+}
