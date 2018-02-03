@@ -38,8 +38,7 @@ public class DocumentKeeper extends Application {
     public static void main(String[] args) {
         DBConnection db = new DBConnection();
         db.createConnection();
-        db.selectFromTags();
-        
+ 
         launch(args);
     }
     

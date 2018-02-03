@@ -101,7 +101,7 @@ public class Document implements Serializable {
     
     @Override
      public String toString(){ // metod för att skriva ut Document
-       System.out.print(this.getName());
+       //System.out.print(this.getName());
         return this.getName(); // returnerar Stringen name
     }
     
