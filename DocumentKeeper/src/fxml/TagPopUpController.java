@@ -52,7 +52,9 @@ public class TagPopUpController implements Initializable {
         obsListForTags = FXCollections.observableArrayList(tags);
         listViewTags.setItems(obsListForTags);
         
+        
         fileListView.setItems(oList);
+        fileListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         System.out.println("Från db" + DBConnection.selectFromTags());
          
     }   

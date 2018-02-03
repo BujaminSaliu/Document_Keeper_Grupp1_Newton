@@ -43,7 +43,7 @@ import models.Document;
 public class FolderContentPageController implements Initializable {
 
     @FXML
-    private Button button;
+    private Button addFileButton;
     
     List <File> selectedFiles;
     
@@ -91,7 +91,7 @@ public class FolderContentPageController implements Initializable {
         root = FXMLLoader.load(getClass().getResource("/fxml/TagPopUp.fxml"));
         stage.setScene(new Scene(root));
         stage.initModality(Modality.APPLICATION_MODAL);
-        stage.initOwner(button.getScene().getWindow());
+        stage.initOwner(addFileButton.getScene().getWindow());
         stage.setOnCloseRequest((WindowEvent we) -> {
             stage.close();
         });
