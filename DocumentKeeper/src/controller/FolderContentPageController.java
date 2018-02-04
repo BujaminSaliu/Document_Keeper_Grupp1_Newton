@@ -5,12 +5,12 @@
  */
 package controller;
 
-import java.io.IOException;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Formatter;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -22,14 +22,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javafx.util.Callback;
 import models.Document;
 import models.Tag;
 
@@ -88,6 +84,25 @@ public class FolderContentPageController implements Initializable {
 
         addTag();
     }
+    
+    @FXML
+    private void createFileButtonAction(ActionEvent event) throws IOException {
+        
+        final Formatter x;
+        
+        
+        try{
+            x = new Formatter("text.txt");
+            System.out.println("file created");
+            
+            ProcessBuilder pb = new ProcessBuilder("Notepad.exe", "text.txt");
+            pb.start();
+        }catch(FileNotFoundException e){
+            System.out.println("Error, alas!!");
+        }
+    }
+    
+   
 
     // Document måste göras om till objekt nu är det bara en string som visas
     @FXML
