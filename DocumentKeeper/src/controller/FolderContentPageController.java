@@ -33,6 +33,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -67,11 +68,12 @@ public class FolderContentPageController implements Initializable {
     private ScrollPane scrollPaneStartPage;
 
     public static ObservableList<Document> oList = FXCollections.observableArrayList();
+    
 
     @FXML
 
     private void addFileButtonAction(ActionEvent event) throws IOException {
-        oList.clear();
+       
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose your files");
         selectedFiles = fileChooser.showOpenMultipleDialog(null);
@@ -100,7 +102,10 @@ public class FolderContentPageController implements Initializable {
                 List tags = new ArrayList<Tag>();
                 files.setTags(tags);
                 
+                
                 oList.add(files);
+                
+                
 
             }
         } catch (Exception e) {
@@ -108,18 +113,19 @@ public class FolderContentPageController implements Initializable {
         }
 
         addTag();
-        displayFiles();
+        displayChosenFiles();
     }
     
-    private void displayFiles() {
-        gridPane.getChildren().clear();
+    private void displayChosenFiles() {
+        gridPane.getChildren().removeAll(gridPane.getChildren());
         gridPane.add(newFileBox, 0, 0);
         int columnCounter = 1;
         int rowCounter = 0;
        for(Document file : oList){
          VBox vBox = new VBox();
-         
-         Label fileName = new Label(file.getName());
+         vBox.setAlignment(Pos.CENTER);
+         Label fileName = new Label(file.getName() + "."+ file.getType());
+         fileName.setAlignment(Pos.CENTER);
          ImageView fileImg = new ImageView();
          fileImg.setImage(new Image("/fxml/fileImage.png"));
          fileImg.setFitHeight(78);
