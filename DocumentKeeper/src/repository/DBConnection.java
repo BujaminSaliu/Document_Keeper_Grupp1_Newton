@@ -12,7 +12,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import models.Document;
 import models.Tag;
 
 /**
@@ -102,6 +104,38 @@ public class DBConnection {
             sqlExcept.printStackTrace();
         }
         return tagList;
+    }
+    
+    
+      public static ArrayList<Document> selectFromFiles() {
+        ArrayList<Document> fileList = new ArrayList<>();
+        try {
+            stmt = conn.createStatement();
+            ResultSet results = stmt.executeQuery("select * from " + "FILES");
+
+            while (results.next()) {
+                int id = results.getInt(1);
+                String restName = results.getString(2);
+                Date date = results.getDate(3);
+                double size = results.getDouble(4);
+                String type = results.getString(5);
+                String path = results.getString(6);
+                
+                
+
+                Document file = new Document(id, restName, date, type, size ,path);
+                System.out.println(file);
+                fileList.add(file);
+
+            }
+            results.close();
+            stmt.close();
+            return fileList;
+
+        } catch (SQLException sqlExcept) {
+            sqlExcept.printStackTrace();
+        }
+        return fileList;
     }
 
 }

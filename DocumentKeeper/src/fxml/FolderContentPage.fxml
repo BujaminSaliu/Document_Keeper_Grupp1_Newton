@@ -68,42 +68,28 @@
                   </VBox>
                </right>
                <center>
-                  <GridPane alignment="CENTER" style="-fx-background-color: #eaeaea;" BorderPane.alignment="CENTER">
-                    <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
-                           <children>
-                              <Button fx:id="addFileButton" mnemonicParsing="false" onAction="#addFileButtonAction" prefHeight="50.0" prefWidth="50.0" stylesheets="@../style/newCascadeStyleSheet.css" text="+">
-                                 <font>
-                                    <Font name="SansSerif Regular" size="22.0" />
-                                 </font>
-                                 <cursor>
-                                    <Cursor fx:constant="DEFAULT" />
-                                 </cursor>
-                                 
-                              </Button>
-                              <Label text="NY FIL">
-                                 <font>
-                                    <Font name="Montserrat Regular" size="13.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </VBox>
-                     </children>
-                  </GridPane>
+                  <ScrollPane fx:id="scrollPaneStartPage" prefViewportHeight="358.0" prefViewportWidth="527.0" />
                </center>
             </BorderPane>
          </center>
       </BorderPane>
+      <VBox fx:id="newFileBox" alignment="CENTER" layoutX="-115.0" layoutY="466.0" prefHeight="124.0" prefWidth="100.0" spacing="5.0">
+         <children>
+            <Button fx:id="addFileButton" mnemonicParsing="false" onAction="#addFileButtonAction" prefHeight="50.0" prefWidth="50.0" stylesheets="@../style/newCascadeStyleSheet.css" text="+">
+               <font>
+                  <Font name="SansSerif Regular" size="22.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+               
+                                    </Button>
+            <Label text="NY FIL">
+               <font>
+                  <Font name="Montserrat Regular" size="13.0" />
+               </font>
+            </Label>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

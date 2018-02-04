@@ -19,11 +19,22 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
@@ -32,6 +43,7 @@ import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import models.Document;
 import models.Tag;
+import repository.DBConnection;
 
 /**
  * FXML Controller class
@@ -46,9 +58,13 @@ public class FolderContentPageController implements Initializable {
     
     List <File> selectedFiles;
     
-  
- 
-
+    private GridPane gridPane;
+    
+    @FXML
+    private VBox newFileBox;
+    
+    @FXML
+    private ScrollPane scrollPaneStartPage;
 
     public static ObservableList<Document> oList = FXCollections.observableArrayList();
 
@@ -83,7 +99,7 @@ public class FolderContentPageController implements Initializable {
                 //tags list hinders nullpointer exception
                 List tags = new ArrayList<Tag>();
                 files.setTags(tags);
-
+                
                 oList.add(files);
 
             }
@@ -92,11 +108,44 @@ public class FolderContentPageController implements Initializable {
         }
 
         addTag();
+        displayFiles();
+    }
+    
+    private void displayFiles() {
+        gridPane.getChildren().clear();
+        gridPane.add(newFileBox, 0, 0);
+        int columnCounter = 1;
+        int rowCounter = 0;
+       for(Document file : oList){
+         VBox vBox = new VBox();
+         
+         Label fileName = new Label(file.getName());
+         ImageView fileImg = new ImageView();
+         fileImg.setImage(new Image("/fxml/fileImage.png"));
+         fileImg.setFitHeight(78);
+         fileImg.setFitWidth(63);
+         vBox.getChildren().addAll(fileImg, fileName);
+       
+         fileName.setMaxWidth(120);
+         if(columnCounter < 4){
+             gridPane.add(vBox, columnCounter, rowCounter);
+         }else{
+             rowCounter++;
+             columnCounter = 0;
+             gridPane.add(vBox, columnCounter, rowCounter);
+             RowConstraints row = new RowConstraints();
+             row.setMinHeight(124);
+             gridPane.setPadding(new Insets(5, 0, 0, 0));
+             gridPane.getRowConstraints().add(row);
+             scrollPaneStartPage.setContent(gridPane);
+         }
+         columnCounter++;
+     }
     }
 
-    // Document måste göras om till objekt nu är det bara en string som visas
+    
     @FXML
-    private void addTag() throws IOException { // läger till kunder i popUp1
+    private void addTag() throws IOException { 
 
         Stage stage;
         Parent root;
@@ -118,7 +167,17 @@ public class FolderContentPageController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-
+        DBConnection.createConnection();
+        DBConnection.selectFromFiles();
+        
+        gridPane = new GridPane();
+        gridPane.setMinWidth(527);
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.add(newFileBox, 0, 0);
+        ColumnConstraints col = new ColumnConstraints();
+        col.setPercentWidth(25);
+        gridPane.getColumnConstraints().addAll(col, col, col, col);
+        scrollPaneStartPage.setContent(gridPane);
     }
 
 }

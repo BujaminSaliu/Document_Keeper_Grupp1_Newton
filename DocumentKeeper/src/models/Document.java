@@ -7,6 +7,7 @@ package models;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class Document implements Serializable {
         this.type = type;
         this.size = size;
         this.path = path;
-
+        this.tags = new ArrayList<>();
     }
 
     public int getId() {
@@ -101,10 +102,14 @@ public class Document implements Serializable {
     
     @Override
      public String toString(){ // metod för att skriva ut Document
-       if(tags.isEmpty()){
-          return this.getName(); 
+       if(tags != null){
+           if(tags.isEmpty()){
+               return this.getName() +"."+ this.getType(); 
+           } else {
+               return "\u2713\t"+ this.getName() +"."+this.getType();
+           }
        }else{
-            return "\u2713\t"+ this.getName(); 
+             return this.getName()+"."+this.getType();
        }
          // returnerar Stringen name
     }

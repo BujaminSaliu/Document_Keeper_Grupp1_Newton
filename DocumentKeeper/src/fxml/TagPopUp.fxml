@@ -78,7 +78,7 @@
                         <Font size="10.0" />
                      </font>
                   </Label>
-                  <Button fx:id="okButton" alignment="BOTTOM_LEFT" mnemonicParsing="false" onAction="#addFiles" stylesheets="@../style/newCascadeStyleSheet.css" text="Importera" textAlignment="CENTER">
+                  <Button fx:id="importButton" alignment="BOTTOM_LEFT" mnemonicParsing="false" onAction="#addFiles" stylesheets="@../style/newCascadeStyleSheet.css" text="Importera" textAlignment="CENTER">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>

@@ -51,20 +51,20 @@ and open the template in the editor.
      -fx-background-color: #fcfe6c;
 }
 
-#okButton {
+#importButton {
     -fx-background-color: black;
     -fx-border-color: #afafaf;
     -fx-border-width:1;
     -fx-text-fill:#7a7b7c;
 }
 
-#okButton:hover{
+#importButton:hover{
   -fx-border-color:#fcfe6c;
   -fx-text-fill:#fcfe6c;
 }
 
 
-#okButton:active{
+#importButton:active{
   -fx-border-color:#fcfe6c;
   -fx-text-fill:#fcfe6c;
 }

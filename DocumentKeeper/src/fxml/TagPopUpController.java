@@ -52,7 +52,7 @@ public class TagPopUpController implements Initializable {
     @FXML
     private ListView<Tag> listViewTags;
     @FXML
-    private Button okButton;
+    private Button importButton;
 
     public ObservableList<Tag> obsListForTags = FXCollections.observableArrayList();
 
@@ -65,6 +65,7 @@ public class TagPopUpController implements Initializable {
 
             try {
                 DBConnection.insertIntoFiles(doc.getName(), doc.getSize(), doc.getType(), doc.getPath(), doc.getTags());
+                
             } catch (Exception e) {
                 System.out.println(e);
                 Alert alert = new Alert(AlertType.ERROR, "Filerna finns redan lagrade", ButtonType.OK);
@@ -118,6 +119,8 @@ public class TagPopUpController implements Initializable {
         }
         fileListView.refresh();
     }
+    
+    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
