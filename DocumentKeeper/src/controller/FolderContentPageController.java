@@ -184,7 +184,8 @@ public class FolderContentPageController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         DBConnection.createConnection();
-        DBConnection.selectFromFiles();
+        ArrayList<Document> files = DBConnection.selectFromFiles();
+        oList = FXCollections.observableArrayList(files);
         
         gridPane = new GridPane();
         gridPane.setMinWidth(527);
@@ -194,6 +195,8 @@ public class FolderContentPageController implements Initializable {
         col.setPercentWidth(25);
         gridPane.getColumnConstraints().addAll(col, col, col, col);
         scrollPaneStartPage.setContent(gridPane);
+        
+        displayChosenFiles();
     }
 
 }
