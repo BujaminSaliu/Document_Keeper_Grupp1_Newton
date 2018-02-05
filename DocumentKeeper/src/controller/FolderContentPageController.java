@@ -5,7 +5,7 @@
  */
 package controller;
 
-import static fxml.TagPopUpController.filesAdded;
+import static controller.TagPopUpController.filesAdded;
 import java.io.IOException;
 import java.io.File;
 import java.net.URL;

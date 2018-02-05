@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package fxml;
+package controller;
 
 import static controller.FolderContentPageController.oList;
 import java.awt.event.MouseEvent;
