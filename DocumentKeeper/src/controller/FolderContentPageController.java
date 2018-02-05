@@ -189,6 +189,9 @@ public class FolderContentPageController implements Initializable {
         DBConnection.createConnection();
         DBConnection.selectFromFiles();
 
+        ArrayList<Document> files = DBConnection.selectFromFiles();
+        oList = FXCollections.observableArrayList(files);
+        
         gridPane = new GridPane();
         gridPane.setMinWidth(527);
         gridPane.setAlignment(Pos.CENTER);
@@ -197,6 +200,8 @@ public class FolderContentPageController implements Initializable {
         col.setPercentWidth(25);
         gridPane.getColumnConstraints().addAll(col, col, col, col);
         scrollPaneStartPage.setContent(gridPane);
+        
+        displayChosenFiles();
     }
 
     private void copyFileUsingJava7Files(File sourceFile, File destinationFile) throws IOException {
