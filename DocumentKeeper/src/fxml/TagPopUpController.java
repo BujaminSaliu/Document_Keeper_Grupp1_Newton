@@ -47,6 +47,9 @@ public class TagPopUpController implements Initializable {
     /**
      * Initializes the controller class.
      */
+    
+    public static boolean filesAdded = false;
+    
     @FXML
     private ListView<Document> fileListView;
     @FXML
@@ -73,7 +76,7 @@ public class TagPopUpController implements Initializable {
                 return;
             }
         }
-
+        filesAdded = true;
         ((Node) (event.getSource())).getScene().getWindow().hide();
     }
 

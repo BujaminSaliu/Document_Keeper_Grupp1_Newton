@@ -5,6 +5,7 @@
  */
 package controller;
 
+import static fxml.TagPopUpController.filesAdded;
 import java.io.IOException;
 import java.io.File;
 import java.net.URL;
@@ -73,6 +74,8 @@ public class FolderContentPageController implements Initializable {
     @FXML
 
     private void addFileButtonAction(ActionEvent event) throws IOException {
+       filesAdded = false;
+       oList.clear();
        
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose your files");
@@ -111,9 +114,13 @@ public class FolderContentPageController implements Initializable {
         } catch (Exception e) {
             System.out.println(e);
         }
-
-        addTag();
+        if(selectedFiles != null){
+            addTag();
+        }
+        if(filesAdded){
         displayChosenFiles();
+        }
+     
     }
     
     private void displayChosenFiles() {
