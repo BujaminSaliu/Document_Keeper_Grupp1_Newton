@@ -6,6 +6,7 @@
 package controller;
 
 import static fxml.TagPopUpController.filesAdded;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.File;
 import java.net.URL;
@@ -22,6 +23,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -157,6 +159,14 @@ public class FolderContentPageController implements Initializable {
          }
          columnCounter++;
      }
+    }
+    
+      @FXML
+    private void ShowInfo(MouseEvent e) {
+        Node source = (Node)e.getSource() ;
+        Integer columnIndex = GridPane.getColumnIndex(source);
+        Integer rowIndex = GridPane.getRowIndex(source);
+        System.out.println(columnIndex + rowIndex);
     }
 
     
