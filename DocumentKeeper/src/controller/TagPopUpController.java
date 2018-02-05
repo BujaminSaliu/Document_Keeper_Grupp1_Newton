@@ -134,7 +134,6 @@ public class TagPopUpController implements Initializable {
         
         fileListView.setItems(oList);
         fileListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        System.out.println("Från db" + DBConnection.selectFromTags());
          
         listViewTags.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         fileListView.scrollTo(0);
