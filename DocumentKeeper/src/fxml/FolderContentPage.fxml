@@ -79,9 +79,7 @@
                <font>
                   <Font name="SansSerif Regular" size="22.0" />
                </font>
-               <cursor>
-                  <Cursor fx:constant="DEFAULT" />
-               </cursor>
+               
                
                                     </Button>
             <Label text="NY FIL">
