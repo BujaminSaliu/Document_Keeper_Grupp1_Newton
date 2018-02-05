@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package fxml;
+package controller;
 
 import static controller.FolderContentPageController.oList;
 import java.awt.event.MouseEvent;
@@ -134,7 +134,6 @@ public class TagPopUpController implements Initializable {
         
         fileListView.setItems(oList);
         fileListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        System.out.println("Från db" + DBConnection.selectFromTags());
          
         listViewTags.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         fileListView.scrollTo(0);

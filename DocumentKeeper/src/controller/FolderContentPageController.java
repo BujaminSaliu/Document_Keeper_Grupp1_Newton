@@ -5,13 +5,12 @@
  */
 package controller;
 
-import static fxml.TagPopUpController.filesAdded;
+import static controller.TagPopUpController.filesAdded;
 import java.io.IOException;
 import java.io.File;
 import java.net.URL;
-import java.text.DecimalFormat;
+import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -58,26 +57,25 @@ public class FolderContentPageController implements Initializable {
     @FXML
 
     private Button addFileButton;
-    
-    List <File> selectedFiles;
-    
+
+    List<File> selectedFiles;
+
     private GridPane gridPane;
-    
+
     @FXML
     private VBox newFileBox;
-    
+
     @FXML
     private ScrollPane scrollPaneStartPage;
 
     public static ObservableList<Document> oList = FXCollections.observableArrayList();
-    
 
     @FXML
 
     private void addFileButtonAction(ActionEvent event) throws IOException {
-       filesAdded = false;
-       oList.clear();
-       
+        filesAdded = false;
+        oList.clear();
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose your files");
         selectedFiles = fileChooser.showOpenMultipleDialog(null);
@@ -105,63 +103,68 @@ public class FolderContentPageController implements Initializable {
                 //tags list hinders nullpointer exception
                 List tags = new ArrayList<Tag>();
                 files.setTags(tags);
-                
-                
+
                 oList.add(files);
-                
-                
 
             }
         } catch (Exception e) {
             System.out.println(e);
         }
-        if(selectedFiles != null){
+        if (selectedFiles != null) {
             addTag();
         }
-        if(filesAdded){
-        displayChosenFiles();
+        if (filesAdded) {
+            displayChosenFiles();
+
+            for (Document doc : oList) {
+                ClassLoader classLoader = getClass().getClassLoader();
+                final String dir = System.getProperty("user.dir");
+                File source = new File(doc.getPath());
+                File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
+                copyFileUsingJava7Files(source, dest);
+            }
+
         }
-     
+
     }
-    
+
     private void displayChosenFiles() {
         gridPane.getChildren().removeAll(gridPane.getChildren());
         gridPane.add(newFileBox, 0, 0);
         int columnCounter = 1;
         int rowCounter = 0;
-       for(Document file : oList){
-         VBox vBox = new VBox();
-         vBox.setAlignment(Pos.TOP_CENTER);
-         Label fileName = new Label(file.getName() + "."+ file.getType());
-         fileName.setAlignment(Pos.CENTER);
-         fileName.setTextAlignment(TextAlignment.CENTER);
-         fileName.setWrapText(true);
-         ImageView fileImg = new ImageView();
-         fileImg.setImage(new Image("/fxml/fileImage.png"));
-         fileImg.setFitHeight(78);
-         fileImg.setFitWidth(63);
-         vBox.getChildren().addAll(fileImg,fileName);
-       
-         fileName.setMaxWidth(120);
-         if(columnCounter < 4){
-             gridPane.add(vBox, columnCounter, rowCounter);
-         }else{
-             rowCounter++;
-             columnCounter = 0;
-             gridPane.add(vBox, columnCounter, rowCounter);
-             RowConstraints row = new RowConstraints();
-             row.setMinHeight(134);
-             gridPane.setPadding(new Insets(5, 0, 0, 0));
-             gridPane.getRowConstraints().add(row);
-             scrollPaneStartPage.setContent(gridPane);
-         }
-         columnCounter++;
-     }
+        for (Document file : oList) {
+            VBox vBox = new VBox();
+            vBox.setAlignment(Pos.TOP_CENTER);
+            Label fileName = new Label(file.getName() + "." + file.getType());
+            fileName.setAlignment(Pos.CENTER);
+            fileName.setTextAlignment(TextAlignment.CENTER);
+            fileName.setWrapText(true);
+            ImageView fileImg = new ImageView();
+            fileImg.setImage(new Image("/fxml/fileImage.png"));
+            fileImg.setFitHeight(78);
+            fileImg.setFitWidth(63);
+            vBox.getChildren().addAll(fileImg, fileName);
+
+            fileName.setMaxWidth(120);
+            if (columnCounter < 4) {
+                gridPane.add(vBox, columnCounter, rowCounter);
+            } else {
+                rowCounter++;
+                columnCounter = 0;
+                gridPane.add(vBox, columnCounter, rowCounter);
+                RowConstraints row = new RowConstraints();
+                row.setMinHeight(134);
+                gridPane.setPadding(new Insets(5, 0, 0, 0));
+                gridPane.getRowConstraints().add(row);
+                scrollPaneStartPage.setContent(gridPane);
+            }
+            columnCounter++;
+        }
     }
 
-    
     @FXML
-    private void addTag() throws IOException { 
+    private void addTag() throws IOException {
 
         Stage stage;
         Parent root;
@@ -185,7 +188,7 @@ public class FolderContentPageController implements Initializable {
         // TODO
         DBConnection.createConnection();
         DBConnection.selectFromFiles();
-        
+
         gridPane = new GridPane();
         gridPane.setMinWidth(527);
         gridPane.setAlignment(Pos.CENTER);
@@ -194,6 +197,10 @@ public class FolderContentPageController implements Initializable {
         col.setPercentWidth(25);
         gridPane.getColumnConstraints().addAll(col, col, col, col);
         scrollPaneStartPage.setContent(gridPane);
+    }
+
+    private void copyFileUsingJava7Files(File sourceFile, File destinationFile) throws IOException {
+        Files.copy(sourceFile.toPath(), destinationFile.toPath());
     }
 
 }
