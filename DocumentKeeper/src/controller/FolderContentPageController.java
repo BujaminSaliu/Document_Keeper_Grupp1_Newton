@@ -37,6 +37,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
@@ -83,9 +84,9 @@ public class FolderContentPageController implements Initializable {
         fileChooser.getExtensionFilters().addAll();
         try {
             for (int i = 0; i < selectedFiles.size(); i++) {
-                String file = selectedFiles.get(i).getName();
+                String file = selectedFiles.get(i).getCanonicalFile().getName();
                 String name = file.substring(0, file.indexOf("."));
-                String fileType = file.substring(file.indexOf(".") + 1, selectedFiles.get(i).getName().length());
+                String fileType = file.substring(file.indexOf(".") + 1, selectedFiles.get(i).getCanonicalFile().getName().length());
 
                 //formats the file size
                 double fileSizeInBytes = selectedFiles.get(i).length();
@@ -130,14 +131,16 @@ public class FolderContentPageController implements Initializable {
         int rowCounter = 0;
        for(Document file : oList){
          VBox vBox = new VBox();
-         vBox.setAlignment(Pos.CENTER);
+         vBox.setAlignment(Pos.TOP_CENTER);
          Label fileName = new Label(file.getName() + "."+ file.getType());
          fileName.setAlignment(Pos.CENTER);
+         fileName.setTextAlignment(TextAlignment.CENTER);
+         fileName.setWrapText(true);
          ImageView fileImg = new ImageView();
          fileImg.setImage(new Image("/fxml/fileImage.png"));
          fileImg.setFitHeight(78);
          fileImg.setFitWidth(63);
-         vBox.getChildren().addAll(fileImg, fileName);
+         vBox.getChildren().addAll(fileImg,fileName);
        
          fileName.setMaxWidth(120);
          if(columnCounter < 4){
@@ -147,7 +150,7 @@ public class FolderContentPageController implements Initializable {
              columnCounter = 0;
              gridPane.add(vBox, columnCounter, rowCounter);
              RowConstraints row = new RowConstraints();
-             row.setMinHeight(124);
+             row.setMinHeight(134);
              gridPane.setPadding(new Insets(5, 0, 0, 0));
              gridPane.getRowConstraints().add(row);
              scrollPaneStartPage.setContent(gridPane);
