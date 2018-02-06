@@ -17,8 +17,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -74,6 +76,7 @@ public class FolderContentPageController implements Initializable {
     
     @FXML
     private Button exportButton;
+    
     @FXML
     private Label nameLabel, typeLabel, sizeLabel, dateLabel;
 
@@ -82,7 +85,7 @@ public class FolderContentPageController implements Initializable {
 
     private String name = null;
     private String type = null;
-
+    
 
     
     private VBox selectedBox;
@@ -132,26 +135,35 @@ public class FolderContentPageController implements Initializable {
             addTag();
         }
         if (filesAdded) {
-            infoLabel.setText("Filer läggs till..vänligen vänta...");
-            for (Document doc : filesToAdd) {
-                
-                ClassLoader classLoader = getClass().getClassLoader();
-                final String dir = System.getProperty("user.dir");
-                File source = new File(doc.getPath());
-                File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
-                
-                copyFileUsingJava7Files(source, dest);
-                oList.add(doc);
-                
-                if (filesToAdd.size() == 1) {
-                    infoLabel.setText("Filen lades till!");
-                }else{
-                    infoLabel.setText("Filerna lades till!");
-                }
-               
-            }
             
-            displayChosenFiles();
+            Task<Void> longRunningTask = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    for (Document doc : filesToAdd) {
+                
+                    ClassLoader classLoader = getClass().getClassLoader();
+                    final String dir = System.getProperty("user.dir");
+                    File source = new File(doc.getPath());
+                    File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
+
+                    copyFileUsingJava7Files(source, dest);
+                    oList.add(doc);
+
+                    if (filesToAdd.size() == 1) {
+                        Platform.runLater(() -> infoLabel.setText("Filen lades till!"));
+                        
+                    }else{
+                       Platform.runLater(() -> infoLabel.setText("Filerna lades till!"));
+                    }
+
+                }
+                   Platform.runLater(() ->displayChosenFiles());
+                return null;
+                }
+            };
+            infoLabel.setText("Filer läggs till..vänligen vänta...");
+            new Thread(longRunningTask).start();
+            
         }
     }
     
@@ -227,7 +239,6 @@ public class FolderContentPageController implements Initializable {
     
     private void showInfo(VBox box, Document file) {
      box.setOnMouseClicked((MouseEvent mouseEvent) -> {
-         System.out.println(selectedBox);
          if(selectedBox != null){
              selectedBox.setStyle("-fx-background-color: none");
          }
