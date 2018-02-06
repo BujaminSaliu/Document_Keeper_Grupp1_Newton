@@ -24,11 +24,8 @@ import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-<<<<<<< HEAD
-=======
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
->>>>>>> b086d115ac53bbea1863485af2b5a3b889e57701
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -143,19 +140,46 @@ public class FolderContentPageController implements Initializable {
             infoLabel.setText("Åtgärden avbröts!");
         }
         if (selectedFiles != null) {
-            
             addTag();
         }
+        
         if (filesAdded) {
-<<<<<<< HEAD
             infoLabel.setText("Filer läggs till..vänligen vänta...");
-            for (Document doc : filesToAdd) {
+//            for (Document doc : filesToAdd) {
+//                
+//                ClassLoader classLoader = getClass().getClassLoader();
+//                final String dir = System.getProperty("user.dir");
+//                File source = new File(doc.getPath());
+//                
+//                //Here we encrypt the file before saving it 
+//                String key = "This is a secret";
+//                
+//                //creating the encrypted file
+//                File encryptedFile = new File(dir + "/src/savedFiles/" + doc.getName() + ".encrypted");
+//                
+//                try {
+//                    
+//                    //Call to encryption method file processor whitch uses "AES" algorithm
+//                    fileProcessor(Cipher.ENCRYPT_MODE,key,source,encryptedFile);
+//                    
+//                    //just to check if the encryption done!
+//                    System.out.println("Encrypted Successfully!");    
+//                } 
+//                catch (Exception ex) {
+//                    System.out.println(ex.getMessage());
+//                }
+//                oList.add(doc);
+//            }
+            Task<Void> longRunningTask = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    for (Document doc : filesToAdd) {
                 
-                ClassLoader classLoader = getClass().getClassLoader();
-                final String dir = System.getProperty("user.dir");
-                File source = new File(doc.getPath());
-                
-                //Here we encrypt the file before saving it 
+                    ClassLoader classLoader = getClass().getClassLoader();
+                    final String dir = System.getProperty("user.dir");
+                    
+                    File source = new File(doc.getPath());
+                    //Here we encrypt the file before saving it 
                 String key = "This is a secret";
                 
                 //creating the encrypted file
@@ -173,21 +197,6 @@ public class FolderContentPageController implements Initializable {
                     System.out.println(ex.getMessage());
                 }
                 oList.add(doc);
-=======
-            
-            Task<Void> longRunningTask = new Task<Void>() {
-                @Override
-                protected Void call() throws Exception {
-                    for (Document doc : filesToAdd) {
->>>>>>> b086d115ac53bbea1863485af2b5a3b889e57701
-                
-                    ClassLoader classLoader = getClass().getClassLoader();
-                    final String dir = System.getProperty("user.dir");
-                    File source = new File(doc.getPath());
-                    File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
-
-                    copyFileUsingJava7Files(source, dest);
-                    oList.add(doc);
 
                     if (filesToAdd.size() == 1) {
                         Platform.runLater(() -> infoLabel.setText("Filen lades till!"));
@@ -204,9 +213,8 @@ public class FolderContentPageController implements Initializable {
             infoLabel.setText("Filer läggs till..vänligen vänta...");
             new Thread(longRunningTask).start();
             
-        }
     }
-    
+    }
     @FXML
     private void exportFileButtonAction() {
         try {
