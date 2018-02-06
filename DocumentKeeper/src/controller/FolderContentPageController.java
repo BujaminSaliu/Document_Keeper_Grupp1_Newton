@@ -148,25 +148,29 @@ public class FolderContentPageController implements Initializable {
     }
     
     @FXML
-    private void exportFileButtonAction() throws IOException {
+    private void exportFileButtonAction() {
+        try {
         final String dir = System.getProperty("user.dir");
         
+        File dest = new File(dir + "/src/savedFiles/" + name + "." + type);
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Export file");
+        fileChooser.setInitialFileName(name + "." + type);
         
-            File dest = new File(dir + "/src/savedFiles/" + name + "." + type);
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Save file");
-            //Set extension filter
-            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-            fileChooser.getExtensionFilters().add(extFilter);
-            File newFile = fileChooser.showSaveDialog(null);
+        //Set extension filter
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(type.toUpperCase(), "*." + type);
+        fileChooser.getExtensionFilters().add(extFilter);
         
-            if(dest != null) {
-               copyFileUsingJava7Files(dest, newFile.getAbsoluteFile());
-               System.out.println(dest);
-             }
+        File newFile = fileChooser.showSaveDialog(null);
+        
+        if(dest != null) {
+            copyFileUsingJava7Files(dest, newFile.getAbsoluteFile());
+            System.out.println(dest);
+        }
+        } catch(Exception e){
+            System.out.println(e);
+        }
 
-          
-        
     }
     
     private void saveFileInfo(String fileName, String fileType){
