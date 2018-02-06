@@ -8,13 +8,17 @@ package controller;
 import static controller.TagPopUpController.filesAdded;
 import java.io.IOException;
 import java.io.File;
+import java.io.FileWriter;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -43,6 +47,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+import javax.imageio.ImageIO;
 import models.Document;
 import models.Tag;
 import repository.DBConnection;
@@ -55,7 +60,6 @@ import repository.DBConnection;
 public class FolderContentPageController implements Initializable {
 
     @FXML
-
     private Button addFileButton;
 
     List<File> selectedFiles;
@@ -67,11 +71,13 @@ public class FolderContentPageController implements Initializable {
 
     @FXML
     private ScrollPane scrollPaneStartPage;
+    
+    @FXML
+    private Button exportFileButton;
 
     public static ObservableList<Document> oList = FXCollections.observableArrayList();
 
     @FXML
-
     private void addFileButtonAction(ActionEvent event) throws IOException {
         filesAdded = false;
         oList.clear();
@@ -126,6 +132,38 @@ public class FolderContentPageController implements Initializable {
 
         }
 
+    }
+    
+    @FXML
+    private void exportFileButtonAction() {
+        
+       
+        
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save file");
+        //Set extension filter
+              FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+              fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showSaveDialog(null);
+        
+        if(file != null){
+                  SaveFile("bajs", file);
+              }
+        
+        
+    }
+    
+    private void SaveFile(String content, File file){
+        try {
+            FileWriter fileWriter = null;
+             
+            fileWriter = new FileWriter(file);
+            fileWriter.write(content);
+            fileWriter.close();
+        } catch (IOException ex) {
+            System.out.println("Nemen det gick ju inte så braaaa");;
+        }
+         
     }
 
     private void displayChosenFiles() {
