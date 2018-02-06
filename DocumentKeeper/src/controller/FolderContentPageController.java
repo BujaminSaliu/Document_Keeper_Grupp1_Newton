@@ -129,6 +129,7 @@ public class FolderContentPageController implements Initializable {
     }
 
     private void displayChosenFiles() {
+        
         gridPane.getChildren().removeAll(gridPane.getChildren());
         gridPane.add(newFileBox, 0, 0);
         int columnCounter = 1;
@@ -140,10 +141,12 @@ public class FolderContentPageController implements Initializable {
             fileName.setAlignment(Pos.CENTER);
             fileName.setTextAlignment(TextAlignment.CENTER);
             fileName.setWrapText(true);
+            
             ImageView fileImg = new ImageView();
             fileImg.setImage(new Image("/fxml/fileImage.png"));
             fileImg.setFitHeight(78);
             fileImg.setFitWidth(63);
+            
             vBox.getChildren().addAll(fileImg, fileName);
 
             fileName.setMaxWidth(120);
