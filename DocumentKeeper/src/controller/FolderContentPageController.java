@@ -76,12 +76,14 @@ public class FolderContentPageController implements Initializable {
     private ScrollPane scrollPaneStartPage;
     
     @FXML
-    private Button exportFileButton;
+    private Button exportButton;
     @FXML
     private Label nameLabel, typeLabel, sizeLabel, dateLabel;
 
 
     public static ObservableList<Document> oList = FXCollections.observableArrayList();
+    private String name = null;
+    private String type = null;
 
     @FXML
     private void addFileButtonAction(ActionEvent event) throws IOException {
@@ -146,37 +148,31 @@ public class FolderContentPageController implements Initializable {
     }
     
     @FXML
-    private void exportFileButtonAction() {
+    private void exportFileButtonAction() throws IOException {
+        final String dir = System.getProperty("user.dir");
         
-       
         
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save file");
-        //Set extension filter
-              FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-              fileChooser.getExtensionFilters().add(extFilter);
-        File file = fileChooser.showSaveDialog(null);
+            File dest = new File(dir + "/src/savedFiles/" + name + "." + type);
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save file");
+            //Set extension filter
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+            fileChooser.getExtensionFilters().add(extFilter);
+            File newFile = fileChooser.showSaveDialog(null);
         
-        if(file != null){
-                  SaveFile("bajs", file);
-              }
-        
+            if(dest != null) {
+               copyFileUsingJava7Files(dest, newFile.getAbsoluteFile());
+               System.out.println(dest);
+             }
+
+          
         
     }
     
-    private void SaveFile(String content, File file){
-        try {
-            FileWriter fileWriter = null;
-             
-            fileWriter = new FileWriter(file);
-            fileWriter.write(content);
-            fileWriter.close();
-        } catch (IOException ex) {
-            System.out.println("Nemen det gick ju inte så braaaa");;
-        }
-         
+    private void saveFileInfo(String fileName, String fileType){
+        name = fileName;
+        type = fileType;
     }
-
     private void displayChosenFiles() {
         
         gridPane.getChildren().removeAll(gridPane.getChildren());
@@ -227,7 +223,7 @@ public class FolderContentPageController implements Initializable {
                 String fileDate = formatter.format(file.getDate());
                 dateLabel.setText(fileDate);
                 
-                
+               saveFileInfo(file.getName(), file.getType());
             });
     }
     

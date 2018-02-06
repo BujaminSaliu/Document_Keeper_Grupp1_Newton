@@ -120,7 +120,7 @@
                                     <Font size="12.0" />
                                  </font>
                               </Button>
-                              <Button fx:id="exportButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="95.0" style="-fx-background-color: none; -fx-border-color: black;" text="EXPORTERA">
+                              <Button fx:id="exportButton" mnemonicParsing="false" onAction="#exportFileButtonAction" prefHeight="27.0" prefWidth="95.0" style="-fx-background-color: none; -fx-border-color: black;" text="EXPORTERA">
                                  <font>
                                     <Font size="12.0" />
                                  </font>
