@@ -37,6 +37,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
@@ -184,14 +186,23 @@ public class FolderContentPageController implements Initializable {
     }
     
     private void showInfo(VBox box, Document file) {
-     box.setOnMouseClicked((event) -> {
-                nameLabel.setText(file.getName());
+     box.setOnMouseClicked((MouseEvent mouseEvent) -> {
+         if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+            if(mouseEvent.getClickCount() == 2){
+                ClassLoader classLoader = getClass().getClassLoader();
+                final String dir = System.getProperty("user.dir");
+                File dest = new File(dir + "/src/savedFiles/" + file.getName() + "." + file.getType());
+                DesktopApi.edit(dest);
+            }
+            nameLabel.setText(file.getName());
                 nameLabel.setWrapText(true);
                 typeLabel.setText(file.getType()+" "+ "fil");
                 sizeLabel.setText(String.valueOf(file.getSize()));
                 Format formatter = new SimpleDateFormat("yyyy-MM-dd");
                 String fileDate = formatter.format(file.getDate());
                 dateLabel.setText(fileDate);
+        }
+              
                 
                 
             });
