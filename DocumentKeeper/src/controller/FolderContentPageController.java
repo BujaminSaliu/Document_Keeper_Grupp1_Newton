@@ -6,6 +6,8 @@
 package controller;
 
 import static controller.TagPopUpController.filesAdded;
+import documentkeeper.DesktopApi;
+import java.awt.Desktop;
 import java.io.IOException;
 import java.io.File;
 import java.net.URL;
@@ -15,6 +17,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -33,6 +37,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
@@ -178,7 +184,7 @@ public class FolderContentPageController implements Initializable {
     }
     
     private void showInfo(VBox box, Document file) {
-     box.setOnMouseClicked((event) -> {
+     box.setOnMouseClicked((MouseEvent mouseEvent) -> {
          System.out.println(selectedBox);
          if(selectedBox != null){
              selectedBox.setStyle("-fx-background-color: none");
@@ -186,8 +192,15 @@ public class FolderContentPageController implements Initializable {
                selectedBox = box; 
                box.setStyle("-fx-background-color: #e2e2e2");
         
-                nameLabel.setText(file.getName());
-                nameLabel.setWrapText(true);
+         if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+            if(mouseEvent.getClickCount() == 2){
+                ClassLoader classLoader = getClass().getClassLoader();
+                final String dir = System.getProperty("user.dir");
+                File dest = new File(dir + "/src/savedFiles/" + file.getName() + "." + file.getType());
+                DesktopApi.edit(dest);
+            }
+            nameLabel.setText(file.getName());
+            nameLabel.setWrapText(true);
                 typeLabel.setText(file.getType()+" "+ "fil");
                 if(file.getSize()> 1000000){
                   int fileSize = (file.getSize()/1000)/1000;
@@ -200,6 +213,8 @@ public class FolderContentPageController implements Initializable {
                 Format formatter = new SimpleDateFormat("yyyy-MM-dd");
                 String fileDate = formatter.format(file.getDate());
                 dateLabel.setText(fileDate);
+        }
+              
                 
                 
             });
@@ -246,7 +261,6 @@ public class FolderContentPageController implements Initializable {
         scrollPaneStartPage.setContent(gridPane);
         
         displayChosenFiles();
-    
     }
 
     private void copyFileUsingJava7Files(File sourceFile, File destinationFile) throws IOException {
