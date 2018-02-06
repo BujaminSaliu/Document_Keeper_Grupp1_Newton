@@ -70,35 +70,35 @@ and open the template in the editor.
 }
 
 #linkedButton{
-    
-    -fx-background-color: none;
+    -fx-background-color:linear-gradient( #636261, black);
     -fx-border-width: 1;
-    -fx-border-color:black;
     -fx-border-radius:0;
+    -fx-text-fill: white;
+    -fx-background-radius: 0;
 }
 
 #linkedButton:hover{
     -fx-text-fill: white;
-   -fx-background-color:  black;
+    -fx-background-color: black;
     -fx-border-width: 1;
-    -fx-border-color:black;
     -fx-cursor: hand;
 }
 
 #exportButton{
-    
-    -fx-background-color: none;
+    -fx-background-color:linear-gradient(#636261, black);
     -fx-border-width: 1;
-    -fx-border-color:black;
     -fx-border-radius:0;
+    -fx-text-fill: white;
+    -fx-background-radius: 0;
 }
 
 #exportButton:hover{
     -fx-text-fill: white;
-   -fx-background-color:  black;
+    -fx-background-color:black;
     -fx-border-width: 1;
-    -fx-border-color:black;
     -fx-cursor: hand;
 }
 
- 
+#fileSizeLabel{
+    -fx-style:bold;
+}

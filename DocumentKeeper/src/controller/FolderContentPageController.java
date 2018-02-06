@@ -9,16 +9,22 @@ import static controller.TagPopUpController.filesAdded;
 import documentkeeper.DesktopApi;
 import java.io.IOException;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.net.URL;
 import java.nio.file.Files;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -46,6 +52,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 import models.Document;
 import models.Tag;
 import repository.DBConnection;
@@ -61,7 +72,7 @@ public class FolderContentPageController implements Initializable {
     private Button addFileButton;
     
     @FXML
-    private Label infoLabel;
+    private Label infoLabel, fileTypeLabel,fileSizeLabel,fileDateLabel, fileTagLabel;
 
     List<File> selectedFiles;
    public static List<Document> filesToAdd = new ArrayList<Document>();
@@ -75,18 +86,19 @@ public class FolderContentPageController implements Initializable {
     private ScrollPane scrollPaneStartPage;
     
     @FXML
-    private Button exportButton;
-    @FXML
-    private Label nameLabel, typeLabel, sizeLabel, dateLabel;
+    private Button exportButton, linkedButton;
+    
     @FXML
     private TextField searchBox;
+    @FXML
+    private Label nameLabel, typeLabel, sizeLabel, dateLabel, tagLabel;
 
 
     public static ObservableList<Document> oList = FXCollections.observableArrayList();
 
     private String name = null;
     private String type = null;
-
+    
 
     
     private VBox selectedBox;
@@ -132,33 +144,64 @@ public class FolderContentPageController implements Initializable {
             infoLabel.setText("Åtgärden avbröts!");
         }
         if (selectedFiles != null) {
-            
             addTag();
         }
+        
         if (filesAdded) {
             infoLabel.setText("Filer läggs till..vänligen vänta...");
-            for (Document doc : filesToAdd) {
+            Task<Void> longRunningTask = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    for (Document doc : filesToAdd) {
                 
-                ClassLoader classLoader = getClass().getClassLoader();
-                final String dir = System.getProperty("user.dir");
-                File source = new File(doc.getPath());
-                File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
+                    ClassLoader classLoader = getClass().getClassLoader();
+                    final String dir = System.getProperty("user.dir");
+                    
+                    File source = new File(doc.getPath());
+                    File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
+
+                    copyFileUsingJava7Files(source, dest);
+                    oList.add(doc);
+                    
+                    //Here we encrypt original the file  
+                    String key = "This is a secret";
                 
-                copyFileUsingJava7Files(source, dest);
-                oList.add(doc);
+                    //creating the encrypted file
+                    File encryptedFile = new File(doc.getPath() + ".encrypted");
                 
-                if (filesToAdd.size() == 1) {
-                    infoLabel.setText("Filen lades till!");
-                }else{
-                    infoLabel.setText("Filerna lades till!");
+                try {
+                    
+                    //Call to encryption method file processor whitch uses "AES" algorithm
+                    fileProcessor(Cipher.ENCRYPT_MODE,key,source,encryptedFile);
+                    
+                    //Delete the original file
+                    source.delete();
+                    
+                    //just to check if the encryption done!
+                    System.out.println("Encrypted Successfully!");    
+                } 
+                catch (Exception ex) {
+                    System.out.println(ex.getMessage());
                 }
-               
-            }
+                oList.add(doc);
+
+                    if (filesToAdd.size() == 1) {
+                        Platform.runLater(() -> infoLabel.setText("Filen lades till!"));
+                        
+                    }else{
+                       Platform.runLater(() -> infoLabel.setText("Filerna lades till!"));
+                    }
+
+                }
+                   Platform.runLater(() ->displayChosenFiles());
+                return null;
+                }
+            };
+            infoLabel.setText("Filer läggs till..vänligen vänta...");
+            new Thread(longRunningTask).start();
             
-            displayChosenFiles();
-        }
     }
-    
+    }
     @FXML
     private void exportFileButtonAction() {
         try {
@@ -231,13 +274,18 @@ public class FolderContentPageController implements Initializable {
     
     private void showInfo(VBox box, Document file) {
      box.setOnMouseClicked((MouseEvent mouseEvent) -> {
-         System.out.println(selectedBox);
          if(selectedBox != null){
              selectedBox.setStyle("-fx-background-color: none");
          }
                selectedBox = box; 
                box.setStyle("-fx-background-color: #e2e2e2");
+        fileTypeLabel.setVisible(true);
+        fileSizeLabel.setVisible(true);
+        fileDateLabel.setVisible(true);
         
+        exportButton.setVisible(true);
+         
+        linkedButton.setVisible(true);
          if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
             if(mouseEvent.getClickCount() == 2){
                 ClassLoader classLoader = getClass().getClassLoader();
@@ -245,6 +293,7 @@ public class FolderContentPageController implements Initializable {
                 File dest = new File(dir + "/src/savedFiles/" + file.getName() + "." + file.getType());
                 DesktopApi.edit(dest);
             }
+             System.out.println(file.getName());
             nameLabel.setText(file.getName());
             nameLabel.setWrapText(true);
                 typeLabel.setText(file.getType()+" "+ "fil");
@@ -259,15 +308,21 @@ public class FolderContentPageController implements Initializable {
                 Format formatter = new SimpleDateFormat("yyyy-MM-dd");
                 String fileDate = formatter.format(file.getDate());
                 dateLabel.setText(fileDate);
-
+                if (!file.getTags().isEmpty()) {
+                fileTagLabel.setVisible(true);
+                tagLabel.setText("" + file.getTags());
+                }
+                else{
+                fileTagLabel.setVisible(false);
+                tagLabel.setText("");
+                }
+                
                 
                saveFileInfo(file.getName(), file.getType());
 
         }
               
-                
-
-            });
+        });
       
     }
     
@@ -297,11 +352,8 @@ public class FolderContentPageController implements Initializable {
         oList.clear();
         //Method from displayChoosenFiles(). I need everything but from another dbconnection directory
         //
-        if(searchBox.getText().equals("")){
-            System.out.println("empty");
-        }
+
         ArrayList<Document> files = DBConnection.search(searchBox.getText().toLowerCase() + event.getText().toLowerCase());
-        System.out.println(searchBox.getText().toLowerCase() + event.getText().toLowerCase());
         for (Document doc : files) {
             oList.add(doc);
         }
@@ -370,4 +422,27 @@ public class FolderContentPageController implements Initializable {
         Files.copy(sourceFile.toPath(), destinationFile.toPath());
     }
 
+    static void fileProcessor(int cipherMode,String key,File inputFile,File outputFile) throws InvalidKeyException{
+	 try {
+	       Key secretKey = new SecretKeySpec(key.getBytes(), "AES");
+	       Cipher cipher = Cipher.getInstance("AES");
+	       cipher.init(cipherMode, secretKey);
+
+	       FileInputStream inputStream = new FileInputStream(inputFile);
+	       byte[] inputBytes = new byte[(int) inputFile.length()];
+	       inputStream.read(inputBytes);
+
+	       byte[] outputBytes = cipher.doFinal(inputBytes);
+
+	       FileOutputStream outputStream = new FileOutputStream(outputFile);
+	       outputStream.write(outputBytes);
+
+	       inputStream.close();
+	       outputStream.close();
+
+	    } catch (NoSuchPaddingException | NoSuchAlgorithmException 
+                     | BadPaddingException
+	             | IllegalBlockSizeException | IOException e) {
+            }
+     }
 }
