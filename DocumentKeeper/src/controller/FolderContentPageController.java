@@ -31,7 +31,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -63,8 +62,10 @@ import repository.DBConnection;
 public class FolderContentPageController implements Initializable {
 
     @FXML
-
     private Button addFileButton;
+    
+    @FXML
+    private Label infoLabel;
 
     List<File> selectedFiles;
    public static List<Document> filesToAdd = new ArrayList<Document>();
@@ -88,12 +89,13 @@ public class FolderContentPageController implements Initializable {
         filesAdded = false;
         oList.clear();
         filesToAdd.clear();
-
+        infoLabel.setText("");
+        
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose your files");
         selectedFiles = fileChooser.showOpenMultipleDialog(null);
         fileChooser.getExtensionFilters().addAll();
-     
+        
         try {
             for (int i = 0; i < selectedFiles.size(); i++) {
                 String file = selectedFiles.get(i).getCanonicalFile().getName();
@@ -119,16 +121,18 @@ public class FolderContentPageController implements Initializable {
                 files.setTags(tags);
 
                 filesToAdd.add(files);
-
+                
             }
         } catch (Exception e) {
             System.out.println(e);
+            infoLabel.setText("Åtgärden avbröts!");
         }
         if (selectedFiles != null) {
+            
             addTag();
         }
         if (filesAdded) {
-
+            
             for (Document doc : filesToAdd) {
                 
                 ClassLoader classLoader = getClass().getClassLoader();
@@ -137,12 +141,17 @@ public class FolderContentPageController implements Initializable {
                 File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
                 copyFileUsingJava7Files(source, dest);
                 oList.add(doc);
+                
+                if (filesToAdd.size() == 1) {
+                    infoLabel.setText("Filen lades till!");
+                }else{
+                    infoLabel.setText("Filerna lades till!");
+                }
+               
             }
             
             displayChosenFiles();
-
         }
-
     }
 
     private void displayChosenFiles() {
@@ -204,7 +213,6 @@ public class FolderContentPageController implements Initializable {
         }
               
                 
-                
             });
     }
     
@@ -247,8 +255,7 @@ public class FolderContentPageController implements Initializable {
         gridPane.getColumnConstraints().addAll(col, col, col, col);
         scrollPaneStartPage.setContent(gridPane);
         
-        displayChosenFiles();
-        
+        displayChosenFiles();   
     }
 
     private void copyFileUsingJava7Files(File sourceFile, File destinationFile) throws IOException {

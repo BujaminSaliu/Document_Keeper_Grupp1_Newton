@@ -50,7 +50,10 @@
             </HBox>
          </top>
          <bottom>
-            <HBox prefHeight="30.0" prefWidth="767.0" style="-fx-background-color: #fcfe6c;" styleClass="back" BorderPane.alignment="CENTER" />
+            <HBox alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="767.0" style="-fx-background-color: #fcfe6c;" styleClass="back" BorderPane.alignment="CENTER">
+               <children>
+                  <Label fx:id="infoLabel" prefHeight="24.0" prefWidth="381.0" />
+               </children></HBox>
          </bottom>
          <right>
             <VBox prefHeight="382.0" prefWidth="20.0" style="-fx-background-color: #fcfe6c;" BorderPane.alignment="CENTER" />
@@ -61,7 +64,7 @@
          <center>
             <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <right>
-                  <VBox prefHeight="358.0" prefWidth="200.0" style="-fx-background-color: #e2e2e2;" BorderPane.alignment="CENTER">
+                  <VBox prefHeight="257.0" prefWidth="200.0" style="-fx-background-color: #e2e2e2;" BorderPane.alignment="CENTER">
                      <children>
                         <Label fx:id="nameLabel" alignment="TOP_CENTER" prefHeight="75.0" prefWidth="200.0" text="dasds" textAlignment="CENTER">
                            <font>
