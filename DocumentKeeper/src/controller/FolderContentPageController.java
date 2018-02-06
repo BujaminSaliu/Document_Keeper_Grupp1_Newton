@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Files;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -67,6 +69,9 @@ public class FolderContentPageController implements Initializable {
 
     @FXML
     private ScrollPane scrollPaneStartPage;
+    
+    @FXML
+    private Label nameLabel, typeLabel, sizeLabel, dateLabel;
 
     public static ObservableList<Document> oList = FXCollections.observableArrayList();
 
@@ -148,7 +153,7 @@ public class FolderContentPageController implements Initializable {
             fileImg.setFitWidth(63);
             
             vBox.getChildren().addAll(fileImg, fileName);
-
+            showInfo(vBox, file);
             fileName.setMaxWidth(120);
             if (columnCounter < 4) {
                 gridPane.add(vBox, columnCounter, rowCounter);
@@ -165,6 +170,21 @@ public class FolderContentPageController implements Initializable {
             columnCounter++;
         }
     }
+    
+    private void showInfo(VBox box, Document file) {
+     box.setOnMouseClicked((event) -> {
+                nameLabel.setText(file.getName());
+                nameLabel.setWrapText(true);
+                typeLabel.setText(file.getType()+" "+ "fil");
+                sizeLabel.setText(String.valueOf(file.getSize()));
+                Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+                String fileDate = formatter.format(file.getDate());
+                dateLabel.setText(fileDate);
+                
+                
+            });
+    }
+    
 
     @FXML
     private void addTag() throws IOException {
