@@ -1,30 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="518.0" prefWidth="767.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.FolderContentPageController">
+<AnchorPane id="AnchorPane" prefHeight="518.0" prefWidth="767.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.FolderContentPageController">
    <children>
       <BorderPane layoutX="177.0" layoutY="73.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
@@ -121,7 +110,7 @@
                               <Label fx:id="sizeLabel" prefHeight="17.0" prefWidth="120.0" />
                            </children>
                         </HBox>
-                        <HBox prefHeight="37.0" prefWidth="200.0">
+                        <HBox prefHeight="28.0" prefWidth="200.0">
                            <children>
                               <Label fx:id="fileDateLabel" prefHeight="17.0" prefWidth="86.0" text="Skapad: " visible="false">
                                  <HBox.margin>
@@ -135,6 +124,19 @@
                                  </font>
                               </Label>
                               <Label fx:id="dateLabel" prefHeight="17.0" prefWidth="121.0" />
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="26.0" prefWidth="200.0">
+                           <children>
+                              <Label fx:id="fileTagLabel" prefHeight="17.0" prefWidth="86.0" text="Tags:" visible="false">
+                                 <HBox.margin>
+                                    <Insets left="20.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font name="Arial Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="tagLabel" prefHeight="17.0" prefWidth="137.0" />
                            </children>
                         </HBox>
                         <HBox alignment="TOP_CENTER" prefHeight="37.0" prefWidth="200.0">

@@ -70,7 +70,7 @@ public class FolderContentPageController implements Initializable {
     private Button addFileButton;
     
     @FXML
-    private Label infoLabel, fileTypeLabel,fileSizeLabel,fileDateLabel;
+    private Label infoLabel, fileTypeLabel,fileSizeLabel,fileDateLabel, fileTagLabel;
 
     List<File> selectedFiles;
    public static List<Document> filesToAdd = new ArrayList<Document>();
@@ -87,7 +87,7 @@ public class FolderContentPageController implements Initializable {
     private Button exportButton, linkedButton;
     
     @FXML
-    private Label nameLabel, typeLabel, sizeLabel, dateLabel;
+    private Label nameLabel, typeLabel, sizeLabel, dateLabel, tagLabel;
 
 
     public static ObservableList<Document> oList = FXCollections.observableArrayList();
@@ -278,7 +278,9 @@ public class FolderContentPageController implements Initializable {
         fileTypeLabel.setVisible(true);
         fileSizeLabel.setVisible(true);
         fileDateLabel.setVisible(true);
+        
         exportButton.setVisible(true);
+         
         linkedButton.setVisible(true);
          if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
             if(mouseEvent.getClickCount() == 2){
@@ -301,7 +303,15 @@ public class FolderContentPageController implements Initializable {
                 Format formatter = new SimpleDateFormat("yyyy-MM-dd");
                 String fileDate = formatter.format(file.getDate());
                 dateLabel.setText(fileDate);
-
+                if (!file.getTags().isEmpty()) {
+                fileTagLabel.setVisible(true);
+                tagLabel.setText("" + file.getTags());
+                }
+                else{
+                fileTagLabel.setVisible(false);
+                tagLabel.setText("");
+                }
+                
                 
                saveFileInfo(file.getName(), file.getType());
 
