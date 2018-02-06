@@ -82,7 +82,9 @@ public class FolderContentPageController implements Initializable {
     private Label nameLabel, typeLabel, sizeLabel, dateLabel;
 
     public static ObservableList<Document> oList = FXCollections.observableArrayList();
-
+    
+    private VBox selectedBox;
+    
     @FXML
 
     private void addFileButtonAction(ActionEvent event) throws IOException {
@@ -103,18 +105,14 @@ public class FolderContentPageController implements Initializable {
                 String fileType = file.substring(file.indexOf(".") + 1, selectedFiles.get(i).getCanonicalFile().getName().length());
 
                 //formats the file size
-                double fileSizeInBytes = selectedFiles.get(i).length();
-                double fileSizeInKB = fileSizeInBytes / 1024;
-
-                fileSizeInKB = fileSizeInKB * 100;
-                fileSizeInKB = Math.round(fileSizeInKB);
-                fileSizeInKB = fileSizeInKB / 100;
+                int fileSizeInBytes = (int) selectedFiles.get(i).length();
+                
                 String path = selectedFiles.get(i).getAbsolutePath();
 
                 Document files = new Document();
                 files.setName(name);
                 files.setType(fileType);
-                files.setSize(fileSizeInKB);
+                files.setSize(fileSizeInBytes);
                 files.setPath(path);
                 //tags list hinders nullpointer exception
                 List tags = new ArrayList<Tag>();
@@ -196,6 +194,13 @@ public class FolderContentPageController implements Initializable {
     
     private void showInfo(VBox box, Document file) {
      box.setOnMouseClicked((MouseEvent mouseEvent) -> {
+         System.out.println(selectedBox);
+         if(selectedBox != null){
+             selectedBox.setStyle("-fx-background-color: none");
+         }
+               selectedBox = box; 
+               box.setStyle("-fx-background-color: #e2e2e2");
+        
          if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
             if(mouseEvent.getClickCount() == 2){
                 ClassLoader classLoader = getClass().getClassLoader();
@@ -204,9 +209,16 @@ public class FolderContentPageController implements Initializable {
                 DesktopApi.edit(dest);
             }
             nameLabel.setText(file.getName());
-                nameLabel.setWrapText(true);
+            nameLabel.setWrapText(true);
                 typeLabel.setText(file.getType()+" "+ "fil");
-                sizeLabel.setText(String.valueOf(file.getSize()));
+                if(file.getSize()> 1000000){
+                  int fileSize = (file.getSize()/1000)/1000;
+                    //double roundedFileSize = Math.round(fileSize*100.0)/100.0;
+                  sizeLabel.setText(String.valueOf(fileSize)+ " MB");  
+                }else {
+                    sizeLabel.setText(String.valueOf(file.getSize()/1000)+ " KB");
+                }
+                
                 Format formatter = new SimpleDateFormat("yyyy-MM-dd");
                 String fileDate = formatter.format(file.getDate());
                 dateLabel.setText(fileDate);
@@ -214,6 +226,7 @@ public class FolderContentPageController implements Initializable {
               
                 
             });
+      
     }
     
 
@@ -255,7 +268,9 @@ public class FolderContentPageController implements Initializable {
         gridPane.getColumnConstraints().addAll(col, col, col, col);
         scrollPaneStartPage.setContent(gridPane);
         
+
         displayChosenFiles();   
+
     }
 
     private void copyFileUsingJava7Files(File sourceFile, File destinationFile) throws IOException {
