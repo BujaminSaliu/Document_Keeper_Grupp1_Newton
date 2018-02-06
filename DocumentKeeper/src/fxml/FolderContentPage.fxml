@@ -61,9 +61,72 @@
          <center>
             <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <right>
-                  <VBox prefHeight="358.0" prefWidth="200.0" style="-fx-background-color: #848484;" BorderPane.alignment="CENTER">
+                  <VBox prefHeight="358.0" prefWidth="200.0" style="-fx-background-color: #e2e2e2;" BorderPane.alignment="CENTER">
                      <children>
-                        <ListView style="-fx-background-color: #848484;" />
+                        <Label fx:id="nameLabel" alignment="TOP_CENTER" prefHeight="75.0" prefWidth="200.0" text="dasds" textAlignment="CENTER">
+                           <font>
+                              <Font name="Arial Hebrew Bold" size="17.0" />
+                           </font>
+                           <padding>
+                              <Insets left="5.0" right="5.0" top="10.0" />
+                           </padding>
+                        </Label>
+                        <HBox prefHeight="24.0" prefWidth="200.0">
+                           <children>
+                              <Label prefHeight="17.0" prefWidth="96.0" text="Filtyp: ">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="typeLabel" prefHeight="17.0" prefWidth="140.0" />
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="23.0" prefWidth="200.0">
+                           <children>
+                              <Label prefHeight="17.0" prefWidth="78.0" text="Storlek:">
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="sizeLabel" prefHeight="17.0" prefWidth="120.0" />
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="37.0" prefWidth="200.0">
+                           <children>
+                              <Label prefHeight="17.0" prefWidth="78.0" text="Datum: ">
+                                 <HBox.margin>
+                                    <Insets />
+                                 </HBox.margin>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </Label>
+                              <Label fx:id="dateLabel" prefHeight="17.0" prefWidth="121.0" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="TOP_CENTER" prefHeight="47.0" prefWidth="200.0">
+                           <children>
+                              <Button fx:id="linkedButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="79.0" stylesheets="@../style/newCascadeStyleSheet.css" text="LÄNKA FIL">
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="exportButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="95.0" style="-fx-background-color: none; -fx-border-color: black;" text="EXPORTERA">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                        </HBox>
                      </children>
                   </VBox>
                </right>
@@ -79,9 +142,7 @@
                <font>
                   <Font name="SansSerif Regular" size="22.0" />
                </font>
-               <cursor>
-                  <Cursor fx:constant="DEFAULT" />
-               </cursor>
+               
                
                                     </Button>
             <Label text="NY FIL">
