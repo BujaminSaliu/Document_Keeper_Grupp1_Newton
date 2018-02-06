@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import models.Document;
@@ -104,8 +105,8 @@ public class DBConnection {
         }
         return tagList;
     }
-    
-      public static ArrayList<Document> selectFromFiles() {
+
+    public static ArrayList<Document> selectFromFiles() {
         ArrayList<Document> fileList = new ArrayList<>();
         try {
             stmt = conn.createStatement();
@@ -118,8 +119,11 @@ public class DBConnection {
                 int size = results.getInt(4);
                 String type = results.getString(5);
                 String path = results.getString(6);
+                ArrayList<Tag> tagList = new ArrayList<>();
+                tagList = selectFromTagsFromFile(id);
 
-                Document file = new Document(id, restName, date, type, size ,path);
+                Document file = new Document(id, restName, date, type, size, path);
+                file.setTags(tagList);
                 //System.out.println(file);
                 fileList.add(file);
 
@@ -133,4 +137,103 @@ public class DBConnection {
         }
         return fileList;
     }
-}  
+
+    public static ArrayList<Tag> selectFromTagsFromFile(int fileId) {
+        ArrayList<Tag> tagList = new ArrayList<>();
+        try {
+            stmt = conn.createStatement();
+            ResultSet results = stmt.executeQuery("SELECT t.* FROM TAGS t INNER JOIN FILE_HAS_TAGS ft on t.ID = ft.TAG_ID INNER JOIN FILES f on f.ID = ft.FILE_ID where f.ID =" + fileId);
+
+            while (results.next()) {
+                int id = results.getInt(1);
+                String restName = results.getString(2);
+                //System.out.println(id + "\t\t" + restName + "\t\t");
+
+                Tag tag = new Tag(id, restName);
+                tagList.add(tag);
+
+            }
+            results.close();
+            stmt.close();
+            return tagList;
+
+        } catch (SQLException sqlExcept) {
+            sqlExcept.printStackTrace();
+        }
+        return tagList;
+    }
+
+    public static ArrayList<Document> search(String search) {
+        ArrayList<Document> fileList = new ArrayList<>();
+        
+        //this searches for documents with same tags
+        try {
+            stmt = conn.createStatement();
+            ResultSet results = stmt.executeQuery("SELECT f.* FROM FILES f INNER JOIN FILE_HAS_TAGS ft on f.ID = ft.FILE_ID INNER JOIN TAGS t on t.ID = ft.TAG_ID where t.NAME like '" + search + "%' order by f.ID");
+
+            while (results.next()) {
+                int id = results.getInt(1);
+                String restName = results.getString(2);
+                Date date = results.getDate(3);
+                int size = results.getInt(4);
+                String type = results.getString(5);
+                String path = results.getString(6);
+                ArrayList<Tag> tagList = new ArrayList<>();
+                tagList = selectFromTagsFromFile(id);
+
+                Document file = new Document(id, restName, date, type, size, path);
+                file.setTags(tagList);
+                fileList.add(file);
+
+            }
+            results.close();
+            stmt.close();
+            //this searches for documents for same name.
+            ArrayList<Document> fileList2 = searchForFileNames(search);
+
+            //Adding and removing same object to avoid duplicates
+            for(Document doc : fileList2){
+                fileList.removeIf(p -> p.getId() == (doc.getId()));
+                fileList.add(doc);
+            }
+            
+            return fileList;
+
+        } catch (SQLException sqlExcept) {
+            sqlExcept.printStackTrace();
+        }
+        return fileList;
+    }
+
+    public static ArrayList<Document> searchForFileNames(String search) {
+        ArrayList<Document> fileList = new ArrayList<>();
+        try {
+            stmt = conn.createStatement();
+            ResultSet results = stmt.executeQuery("SELECT f.* FROM FILES f where f.NAME like '" + search + "%' or UPPER(f.NAME) like UPPER('"+search+"%')");
+
+            while (results.next()) {
+                int id = results.getInt(1);
+                String restName = results.getString(2);
+                Date date = results.getDate(3);
+                int size = results.getInt(4);
+                String type = results.getString(5);
+                String path = results.getString(6);
+                ArrayList<Tag> tagList = new ArrayList<>();
+                tagList = selectFromTagsFromFile(id);
+
+                Document file = new Document(id, restName, date, type, size, path);
+                file.setTags(tagList);
+                fileList.add(file);
+
+            }
+            results.close();
+            stmt.close();
+            return fileList;
+
+        } catch (SQLException sqlExcept) {
+            sqlExcept.printStackTrace();
+        }
+        return fileList;
+    }
+
+}

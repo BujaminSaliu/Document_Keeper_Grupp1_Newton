@@ -31,8 +31,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
@@ -76,6 +78,8 @@ public class FolderContentPageController implements Initializable {
     private Button exportButton;
     @FXML
     private Label nameLabel, typeLabel, sizeLabel, dateLabel;
+    @FXML
+    private TextField searchBox;
 
 
     public static ObservableList<Document> oList = FXCollections.observableArrayList();
@@ -287,13 +291,65 @@ public class FolderContentPageController implements Initializable {
         stage.showAndWait(); // öppnar popUp
 
     }
+    
+    @FXML
+    private void search(KeyEvent event) {
+        oList.clear();
+        //Method from displayChoosenFiles(). I need everything but from another dbconnection directory
+        //
+        if(searchBox.getText().equals("")){
+            System.out.println("empty");
+        }
+        ArrayList<Document> files = DBConnection.search(searchBox.getText().toLowerCase() + event.getText().toLowerCase());
+        System.out.println(searchBox.getText().toLowerCase() + event.getText().toLowerCase());
+        for (Document doc : files) {
+            oList.add(doc);
+        }
+        gridPane.getChildren().removeAll(gridPane.getChildren());
+        gridPane.add(newFileBox, 0, 0);
+        int columnCounter = 1;
+        int rowCounter = 0;
+        oList = FXCollections.observableArrayList(files);
+        for (Document file : oList) {
+            VBox vBox = new VBox();
+            vBox.setAlignment(Pos.TOP_CENTER);
+            Label fileName = new Label(file.getName() + "." + file.getType());
+            fileName.setAlignment(Pos.CENTER);
+            fileName.setTextAlignment(TextAlignment.CENTER);
+            fileName.setWrapText(true);
+            
+            ImageView fileImg = new ImageView();
+            fileImg.setImage(new Image("/fxml/fileImage.png"));
+            fileImg.setFitHeight(78);
+            fileImg.setFitWidth(63);
+            
+            vBox.getChildren().addAll(fileImg, fileName);
+            showInfo(vBox, file);
+            fileName.setMaxWidth(120);
+            if (columnCounter < 4) {
+                gridPane.add(vBox, columnCounter, rowCounter);
+            } else {
+                rowCounter++;
+                columnCounter = 0;
+                gridPane.add(vBox, columnCounter, rowCounter);
+                RowConstraints row = new RowConstraints();
+                row.setMinHeight(134);
+                gridPane.setPadding(new Insets(5, 0, 0, 0));
+                gridPane.getRowConstraints().add(row);
+                scrollPaneStartPage.setContent(gridPane);
+            }
+            columnCounter++;
+        }
+        
+
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         DBConnection.createConnection();
         DBConnection.selectFromFiles();
-
+        
         ArrayList<Document> files = DBConnection.selectFromFiles();
         oList = FXCollections.observableArrayList(files);
         
@@ -306,9 +362,8 @@ public class FolderContentPageController implements Initializable {
         gridPane.getColumnConstraints().addAll(col, col, col, col);
         scrollPaneStartPage.setContent(gridPane);
         
-
         displayChosenFiles();   
-
+        
     }
 
     private void copyFileUsingJava7Files(File sourceFile, File destinationFile) throws IOException {
