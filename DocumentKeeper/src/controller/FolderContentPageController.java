@@ -145,31 +145,6 @@ public class FolderContentPageController implements Initializable {
         
         if (filesAdded) {
             infoLabel.setText("Filer läggs till..vänligen vänta...");
-//            for (Document doc : filesToAdd) {
-//                
-//                ClassLoader classLoader = getClass().getClassLoader();
-//                final String dir = System.getProperty("user.dir");
-//                File source = new File(doc.getPath());
-//                
-//                //Here we encrypt the file before saving it 
-//                String key = "This is a secret";
-//                
-//                //creating the encrypted file
-//                File encryptedFile = new File(dir + "/src/savedFiles/" + doc.getName() + ".encrypted");
-//                
-//                try {
-//                    
-//                    //Call to encryption method file processor whitch uses "AES" algorithm
-//                    fileProcessor(Cipher.ENCRYPT_MODE,key,source,encryptedFile);
-//                    
-//                    //just to check if the encryption done!
-//                    System.out.println("Encrypted Successfully!");    
-//                } 
-//                catch (Exception ex) {
-//                    System.out.println(ex.getMessage());
-//                }
-//                oList.add(doc);
-//            }
             Task<Void> longRunningTask = new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
@@ -179,16 +154,24 @@ public class FolderContentPageController implements Initializable {
                     final String dir = System.getProperty("user.dir");
                     
                     File source = new File(doc.getPath());
-                    //Here we encrypt the file before saving it 
-                String key = "This is a secret";
+                    File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
+
+                    copyFileUsingJava7Files(source, dest);
+                    oList.add(doc);
+                    
+                    //Here we encrypt original the file  
+                    String key = "This is a secret";
                 
-                //creating the encrypted file
-                File encryptedFile = new File(dir + "/src/savedFiles/" + doc.getName() + ".encrypted");
+                    //creating the encrypted file
+                    File encryptedFile = new File(doc.getPath() + ".encrypted");
                 
                 try {
                     
                     //Call to encryption method file processor whitch uses "AES" algorithm
                     fileProcessor(Cipher.ENCRYPT_MODE,key,source,encryptedFile);
+                    
+                    //Delete the original file
+                    source.delete();
                     
                     //just to check if the encryption done!
                     System.out.println("Encrypted Successfully!");    
