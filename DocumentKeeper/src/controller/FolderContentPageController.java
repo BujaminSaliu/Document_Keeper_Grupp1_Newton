@@ -6,6 +6,8 @@
 package controller;
 
 import static controller.TagPopUpController.filesAdded;
+import documentkeeper.DesktopApi;
+import java.awt.Desktop;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileWriter;
@@ -31,12 +33,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
@@ -63,6 +66,9 @@ public class FolderContentPageController implements Initializable {
 
     @FXML
     private Button addFileButton;
+    
+    @FXML
+    private Label infoLabel;
 
     List<File> selectedFiles;
    public static List<Document> filesToAdd = new ArrayList<Document>();
@@ -82,20 +88,27 @@ public class FolderContentPageController implements Initializable {
 
 
     public static ObservableList<Document> oList = FXCollections.observableArrayList();
+
     private String name = null;
     private String type = null;
+
+
+    
+    private VBox selectedBox;
+    
 
     @FXML
     private void addFileButtonAction(ActionEvent event) throws IOException {
         filesAdded = false;
         oList.clear();
         filesToAdd.clear();
-
+        infoLabel.setText("");
+        
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose your files");
         selectedFiles = fileChooser.showOpenMultipleDialog(null);
         fileChooser.getExtensionFilters().addAll();
-     
+        
         try {
             for (int i = 0; i < selectedFiles.size(); i++) {
                 String file = selectedFiles.get(i).getCanonicalFile().getName();
@@ -103,34 +116,32 @@ public class FolderContentPageController implements Initializable {
                 String fileType = file.substring(file.indexOf(".") + 1, selectedFiles.get(i).getCanonicalFile().getName().length());
 
                 //formats the file size
-                double fileSizeInBytes = selectedFiles.get(i).length();
-                double fileSizeInKB = fileSizeInBytes / 1024;
-
-                fileSizeInKB = fileSizeInKB * 100;
-                fileSizeInKB = Math.round(fileSizeInKB);
-                fileSizeInKB = fileSizeInKB / 100;
+                int fileSizeInBytes = (int) selectedFiles.get(i).length();
+                
                 String path = selectedFiles.get(i).getAbsolutePath();
 
                 Document files = new Document();
                 files.setName(name);
                 files.setType(fileType);
-                files.setSize(fileSizeInKB);
+                files.setSize(fileSizeInBytes);
                 files.setPath(path);
                 //tags list hinders nullpointer exception
                 List tags = new ArrayList<Tag>();
                 files.setTags(tags);
 
                 filesToAdd.add(files);
-
+                
             }
         } catch (Exception e) {
             System.out.println(e);
+            infoLabel.setText("Åtgärden avbröts!");
         }
         if (selectedFiles != null) {
+            
             addTag();
         }
         if (filesAdded) {
-
+            
             for (Document doc : filesToAdd) {
                 
                 ClassLoader classLoader = getClass().getClassLoader();
@@ -139,12 +150,17 @@ public class FolderContentPageController implements Initializable {
                 File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
                 copyFileUsingJava7Files(source, dest);
                 oList.add(doc);
+                
+                if (filesToAdd.size() == 1) {
+                    infoLabel.setText("Filen lades till!");
+                }else{
+                    infoLabel.setText("Filerna lades till!");
+                }
+               
             }
             
             displayChosenFiles();
-
         }
-
     }
     
     @FXML
@@ -218,17 +234,45 @@ public class FolderContentPageController implements Initializable {
     }
     
     private void showInfo(VBox box, Document file) {
-     box.setOnMouseClicked((event) -> {
-                nameLabel.setText(file.getName());
-                nameLabel.setWrapText(true);
+     box.setOnMouseClicked((MouseEvent mouseEvent) -> {
+         System.out.println(selectedBox);
+         if(selectedBox != null){
+             selectedBox.setStyle("-fx-background-color: none");
+         }
+               selectedBox = box; 
+               box.setStyle("-fx-background-color: #e2e2e2");
+        
+         if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+            if(mouseEvent.getClickCount() == 2){
+                ClassLoader classLoader = getClass().getClassLoader();
+                final String dir = System.getProperty("user.dir");
+                File dest = new File(dir + "/src/savedFiles/" + file.getName() + "." + file.getType());
+                DesktopApi.edit(dest);
+            }
+            nameLabel.setText(file.getName());
+            nameLabel.setWrapText(true);
                 typeLabel.setText(file.getType()+" "+ "fil");
-                sizeLabel.setText(String.valueOf(file.getSize()));
+                if(file.getSize()> 1000000){
+                  int fileSize = (file.getSize()/1000)/1000;
+                    //double roundedFileSize = Math.round(fileSize*100.0)/100.0;
+                  sizeLabel.setText(String.valueOf(fileSize)+ " MB");  
+                }else {
+                    sizeLabel.setText(String.valueOf(file.getSize()/1000)+ " KB");
+                }
+                
                 Format formatter = new SimpleDateFormat("yyyy-MM-dd");
                 String fileDate = formatter.format(file.getDate());
                 dateLabel.setText(fileDate);
+
                 
                saveFileInfo(file.getName(), file.getType());
+
+        }
+              
+                
+
             });
+      
     }
     
 
@@ -270,7 +314,9 @@ public class FolderContentPageController implements Initializable {
         gridPane.getColumnConstraints().addAll(col, col, col, col);
         scrollPaneStartPage.setContent(gridPane);
         
-        displayChosenFiles();
+
+        displayChosenFiles();   
+
     }
 
     private void copyFileUsingJava7Files(File sourceFile, File destinationFile) throws IOException {

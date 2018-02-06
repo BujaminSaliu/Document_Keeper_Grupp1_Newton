@@ -115,7 +115,7 @@ public class DBConnection {
                 int id = results.getInt(1);
                 String restName = results.getString(2);
                 Date date = results.getDate(3);
-                double size = results.getDouble(4);
+                int size = results.getInt(4);
                 String type = results.getString(5);
                 String path = results.getString(6);
 

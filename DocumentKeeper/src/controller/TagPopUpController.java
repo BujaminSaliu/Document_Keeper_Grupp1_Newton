@@ -48,7 +48,7 @@ public class TagPopUpController implements Initializable {
     private ListView<Tag> listViewTags;
     @FXML
     private Button importButton;
-   
+
     public ObservableList<Tag> obsListForTags = FXCollections.observableArrayList();
 
     @FXML
@@ -68,7 +68,9 @@ public class TagPopUpController implements Initializable {
                 return;
             }
         }
+        
         filesAdded = true;
+        
         ((Node) (event.getSource())).getScene().getWindow().hide();
     }
 
