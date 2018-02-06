@@ -5,6 +5,7 @@
  */
 package controller;
 
+import static controller.FolderContentPageController.filesToAdd;
 import static controller.FolderContentPageController.oList;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -131,7 +132,7 @@ public class TagPopUpController implements Initializable {
         obsListForTags = FXCollections.observableArrayList(tags);
         listViewTags.setItems(obsListForTags);
         
-        
+        oList.addAll(filesToAdd);
         fileListView.setItems(oList);
         fileListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
          
