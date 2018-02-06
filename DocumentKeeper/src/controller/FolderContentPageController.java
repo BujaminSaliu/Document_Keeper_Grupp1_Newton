@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.net.URL;
 import java.nio.file.Files;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -63,6 +65,7 @@ public class FolderContentPageController implements Initializable {
     private Button addFileButton;
 
     List<File> selectedFiles;
+   public static List<Document> filesToAdd = new ArrayList<Document>();
 
     private GridPane gridPane;
 
@@ -74,6 +77,9 @@ public class FolderContentPageController implements Initializable {
     
     @FXML
     private Button exportFileButton;
+    @FXML
+    private Label nameLabel, typeLabel, sizeLabel, dateLabel;
+
 
     public static ObservableList<Document> oList = FXCollections.observableArrayList();
 
@@ -81,11 +87,13 @@ public class FolderContentPageController implements Initializable {
     private void addFileButtonAction(ActionEvent event) throws IOException {
         filesAdded = false;
         oList.clear();
+        filesToAdd.clear();
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose your files");
         selectedFiles = fileChooser.showOpenMultipleDialog(null);
         fileChooser.getExtensionFilters().addAll();
+     
         try {
             for (int i = 0; i < selectedFiles.size(); i++) {
                 String file = selectedFiles.get(i).getCanonicalFile().getName();
@@ -110,7 +118,7 @@ public class FolderContentPageController implements Initializable {
                 List tags = new ArrayList<Tag>();
                 files.setTags(tags);
 
-                oList.add(files);
+                filesToAdd.add(files);
 
             }
         } catch (Exception e) {
@@ -120,15 +128,18 @@ public class FolderContentPageController implements Initializable {
             addTag();
         }
         if (filesAdded) {
-            displayChosenFiles();
 
-            for (Document doc : oList) {
+            for (Document doc : filesToAdd) {
+                
                 ClassLoader classLoader = getClass().getClassLoader();
                 final String dir = System.getProperty("user.dir");
                 File source = new File(doc.getPath());
                 File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
                 copyFileUsingJava7Files(source, dest);
+                oList.add(doc);
             }
+            
+            displayChosenFiles();
 
         }
 
@@ -167,10 +178,13 @@ public class FolderContentPageController implements Initializable {
     }
 
     private void displayChosenFiles() {
+        
         gridPane.getChildren().removeAll(gridPane.getChildren());
         gridPane.add(newFileBox, 0, 0);
         int columnCounter = 1;
         int rowCounter = 0;
+        ArrayList<Document> files = DBConnection.selectFromFiles();
+        oList = FXCollections.observableArrayList(files);
         for (Document file : oList) {
             VBox vBox = new VBox();
             vBox.setAlignment(Pos.TOP_CENTER);
@@ -178,12 +192,14 @@ public class FolderContentPageController implements Initializable {
             fileName.setAlignment(Pos.CENTER);
             fileName.setTextAlignment(TextAlignment.CENTER);
             fileName.setWrapText(true);
+            
             ImageView fileImg = new ImageView();
             fileImg.setImage(new Image("/fxml/fileImage.png"));
             fileImg.setFitHeight(78);
             fileImg.setFitWidth(63);
+            
             vBox.getChildren().addAll(fileImg, fileName);
-
+            showInfo(vBox, file);
             fileName.setMaxWidth(120);
             if (columnCounter < 4) {
                 gridPane.add(vBox, columnCounter, rowCounter);
@@ -200,6 +216,21 @@ public class FolderContentPageController implements Initializable {
             columnCounter++;
         }
     }
+    
+    private void showInfo(VBox box, Document file) {
+     box.setOnMouseClicked((event) -> {
+                nameLabel.setText(file.getName());
+                nameLabel.setWrapText(true);
+                typeLabel.setText(file.getType()+" "+ "fil");
+                sizeLabel.setText(String.valueOf(file.getSize()));
+                Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+                String fileDate = formatter.format(file.getDate());
+                dateLabel.setText(fileDate);
+                
+                
+            });
+    }
+    
 
     @FXML
     private void addTag() throws IOException {

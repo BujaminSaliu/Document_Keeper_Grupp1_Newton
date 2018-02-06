@@ -1,0 +1,5 @@
+<<<<<<< HEAD
+=======
+file.reference.derbyclient-10.10.1.1.jar=/home/softy/H\u00e4mtningar/derbyclient-10.10.1.1.jar
+file.reference.derbyclient.jar=C:\\Users\\conra\\Documents\\NetBeansProjects\\APIS\\derbyclient.jar
+>>>>>>> dev
