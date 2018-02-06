@@ -7,7 +7,6 @@ package controller;
 
 import static controller.TagPopUpController.filesAdded;
 import documentkeeper.DesktopApi;
-import java.awt.Desktop;
 import java.io.IOException;
 import java.io.File;
 import java.net.URL;
@@ -17,8 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -31,25 +28,20 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javafx.util.Callback;
 import models.Document;
 import models.Tag;
 import repository.DBConnection;
@@ -130,13 +122,14 @@ public class FolderContentPageController implements Initializable {
             addTag();
         }
         if (filesAdded) {
-            
+            infoLabel.setText("Filer läggs till..vänligen vänta...");
             for (Document doc : filesToAdd) {
                 
                 ClassLoader classLoader = getClass().getClassLoader();
                 final String dir = System.getProperty("user.dir");
                 File source = new File(doc.getPath());
                 File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
+                
                 copyFileUsingJava7Files(source, dest);
                 oList.add(doc);
                 
