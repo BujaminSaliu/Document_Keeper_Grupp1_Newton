@@ -61,6 +61,7 @@ public class FolderContentPageController implements Initializable {
     private Button addFileButton;
 
     List<File> selectedFiles;
+   public static List<Document> filesToAdd = new ArrayList<Document>();
 
     private GridPane gridPane;
 
@@ -80,11 +81,13 @@ public class FolderContentPageController implements Initializable {
     private void addFileButtonAction(ActionEvent event) throws IOException {
         filesAdded = false;
         oList.clear();
+        filesToAdd.clear();
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose your files");
         selectedFiles = fileChooser.showOpenMultipleDialog(null);
         fileChooser.getExtensionFilters().addAll();
+     
         try {
             for (int i = 0; i < selectedFiles.size(); i++) {
                 String file = selectedFiles.get(i).getCanonicalFile().getName();
@@ -109,7 +112,7 @@ public class FolderContentPageController implements Initializable {
                 List tags = new ArrayList<Tag>();
                 files.setTags(tags);
 
-                oList.add(files);
+                filesToAdd.add(files);
 
             }
         } catch (Exception e) {
@@ -119,15 +122,18 @@ public class FolderContentPageController implements Initializable {
             addTag();
         }
         if (filesAdded) {
-            displayChosenFiles();
 
-            for (Document doc : oList) {
+            for (Document doc : filesToAdd) {
+                
                 ClassLoader classLoader = getClass().getClassLoader();
                 final String dir = System.getProperty("user.dir");
                 File source = new File(doc.getPath());
                 File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
                 copyFileUsingJava7Files(source, dest);
+                oList.add(doc);
             }
+            
+            displayChosenFiles();
 
         }
 
@@ -139,6 +145,8 @@ public class FolderContentPageController implements Initializable {
         gridPane.add(newFileBox, 0, 0);
         int columnCounter = 1;
         int rowCounter = 0;
+        ArrayList<Document> files = DBConnection.selectFromFiles();
+        oList = FXCollections.observableArrayList(files);
         for (Document file : oList) {
             VBox vBox = new VBox();
             vBox.setAlignment(Pos.TOP_CENTER);

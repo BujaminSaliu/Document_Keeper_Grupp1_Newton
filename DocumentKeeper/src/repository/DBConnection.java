@@ -10,7 +10,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -61,9 +60,9 @@ public class DBConnection {
         while (rs.next()) {
             java.math.BigDecimal idColVar = rs.getBigDecimal(1);
             // Get automatically generated key value
-            for (Tag tag : tags) {
+            tags.forEach((tag) -> {
                 insertIntoFile_Has_Tags(idColVar.intValueExact(), tag.getId());
-            }
+            });
         }
         rs.close();
         stmt.close();
@@ -106,7 +105,6 @@ public class DBConnection {
         return tagList;
     }
     
-    
       public static ArrayList<Document> selectFromFiles() {
         ArrayList<Document> fileList = new ArrayList<>();
         try {
@@ -120,11 +118,9 @@ public class DBConnection {
                 double size = results.getDouble(4);
                 String type = results.getString(5);
                 String path = results.getString(6);
-                
-                
 
                 Document file = new Document(id, restName, date, type, size ,path);
-                System.out.println(file);
+                //System.out.println(file);
                 fileList.add(file);
 
             }
@@ -137,5 +133,4 @@ public class DBConnection {
         }
         return fileList;
     }
-
-}
+}  
