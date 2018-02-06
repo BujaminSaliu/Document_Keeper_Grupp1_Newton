@@ -70,7 +70,7 @@ public class FolderContentPageController implements Initializable {
     private Button addFileButton;
     
     @FXML
-    private Label infoLabel;
+    private Label infoLabel, fileTypeLabel,fileSizeLabel,fileDateLabel;
 
     List<File> selectedFiles;
    public static List<Document> filesToAdd = new ArrayList<Document>();
@@ -84,7 +84,7 @@ public class FolderContentPageController implements Initializable {
     private ScrollPane scrollPaneStartPage;
     
     @FXML
-    private Button exportButton;
+    private Button exportButton, linkedButton;
     
     @FXML
     private Label nameLabel, typeLabel, sizeLabel, dateLabel;
@@ -275,7 +275,11 @@ public class FolderContentPageController implements Initializable {
          }
                selectedBox = box; 
                box.setStyle("-fx-background-color: #e2e2e2");
-        
+        fileTypeLabel.setVisible(true);
+        fileSizeLabel.setVisible(true);
+        fileDateLabel.setVisible(true);
+        exportButton.setVisible(true);
+        linkedButton.setVisible(true);
          if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
             if(mouseEvent.getClickCount() == 2){
                 ClassLoader classLoader = getClass().getClassLoader();
