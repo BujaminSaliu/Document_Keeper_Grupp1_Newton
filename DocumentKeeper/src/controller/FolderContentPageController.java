@@ -6,6 +6,8 @@
 package controller;
 
 import static controller.TagPopUpController.filesAdded;
+import documentkeeper.DesktopApi;
+import java.awt.Desktop;
 import java.io.IOException;
 import java.io.File;
 import java.net.URL;
@@ -13,6 +15,8 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -210,6 +214,7 @@ public class FolderContentPageController implements Initializable {
         scrollPaneStartPage.setContent(gridPane);
         
         displayChosenFiles();
+        
     }
 
     private void copyFileUsingJava7Files(File sourceFile, File destinationFile) throws IOException {
