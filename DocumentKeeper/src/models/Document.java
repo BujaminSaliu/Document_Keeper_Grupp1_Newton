@@ -20,7 +20,7 @@ public class Document implements Serializable {
     String name;
     Date date;
     String type;
-    double size;
+    int size;
     String path;
     List<Tag> tags;
    
@@ -29,7 +29,7 @@ public class Document implements Serializable {
         
     }
 
-    public Document(int id, String name,Date date, String type,double size, String path) {
+    public Document(int id, String name,Date date, String type,int size, String path) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -81,11 +81,11 @@ public class Document implements Serializable {
         this.tags = tags;
     }
 
-    public double getSize() {
+    public int getSize() {
         return size;
     }
 
-    public void setSize(double size) {
+    public void setSize(int size) {
         this.size = size;
     }
 
