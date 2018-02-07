@@ -7,6 +7,7 @@ package controller;
 
 import static controller.TagPopUpController.filesAdded;
 import documentkeeper.DesktopApi;
+import java.awt.Component;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,16 +24,19 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -42,13 +46,17 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -82,6 +90,9 @@ public class FolderContentPageController implements Initializable {
     private GridPane gridPane;
 
     @FXML
+    private GridPane tagBox;
+
+    @FXML
     private VBox newFileBox;
 
     @FXML
@@ -98,7 +109,7 @@ public class FolderContentPageController implements Initializable {
     private ListView<String> listToLink;
 
     public static ObservableList<Document> oList = FXCollections.observableArrayList();
-     public static ObservableList<String> linkedFilesObs = FXCollections.observableArrayList();
+    public static ObservableList<String> linkedFilesObs = FXCollections.observableArrayList();
 
     private String name = null;
     private String type = null;
@@ -123,9 +134,9 @@ public class FolderContentPageController implements Initializable {
 
     @FXML
     private void pushTheButton(Document fileA) {
-       // int fileB = listToLink.getSelectionModel().getSelectedItem().getId();
-       // System.out.println(" fileA.id " + fileA.getId() + " fileB.id " + fileB);
-       // DBConnection.linkFiles(fileA.getId(), fileB);
+        // int fileB = listToLink.getSelectionModel().getSelectedItem().getId();
+        // System.out.println(" fileA.id " + fileA.getId() + " fileB.id " + fileB);
+        // DBConnection.linkFiles(fileA.getId(), fileB);
     }
 
     @FXML
@@ -177,33 +188,32 @@ public class FolderContentPageController implements Initializable {
                 @Override
                 protected Void call() throws Exception {
                     for (Document doc : filesToAdd) {
-                
-                    ClassLoader classLoader = getClass().getClassLoader();
-                    final String dir = System.getProperty("user.dir");
-                    
-                    File source = new File(doc.getPath());
-                    File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
 
-                    oList.add(doc);
-                    //Here we encrypt original the file  
-                    //creating a path to the encrypted file
-                    File encryptedFile = new File(dir + "/src/savedFiles/" + doc.getName()+ ".encrypted");
-                
-                try {
-                    
-                    //Call to encryption method file processor whitch uses "AES" algorithm
-                    fileProcessor(Cipher.ENCRYPT_MODE,key,source,encryptedFile);
-                    
-                    //Delete the original one
-                    source.delete();
-                    
-                    //just to check if the encryption done!
-                    System.out.println("Encrypted Successfully!");    
-                } 
-                catch (Exception ex) {
-                    System.out.println(ex.getMessage());
-                }
-                oList.add(doc);
+                        ClassLoader classLoader = getClass().getClassLoader();
+                        final String dir = System.getProperty("user.dir");
+
+                        File source = new File(doc.getPath());
+                        File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
+
+                        oList.add(doc);
+                        //Here we encrypt original the file  
+                        //creating a path to the encrypted file
+                        File encryptedFile = new File(dir + "/src/savedFiles/" + doc.getName() + ".encrypted");
+
+                        try {
+
+                            //Call to encryption method file processor whitch uses "AES" algorithm
+                            fileProcessor(Cipher.ENCRYPT_MODE, key, source, encryptedFile);
+
+                            //Delete the original one
+                            source.delete();
+
+                            //just to check if the encryption done!
+                            System.out.println("Encrypted Successfully!");
+                        } catch (Exception ex) {
+                            System.out.println(ex.getMessage());
+                        }
+                        oList.add(doc);
 
                         if (filesToAdd.size() == 1) {
                             Platform.runLater(() -> infoLabel.setText("Filen lades till!"));
@@ -222,12 +232,12 @@ public class FolderContentPageController implements Initializable {
 
         }
     }
-    
+
     @FXML
     private void linkFiles(ActionEvent event) throws IOException {
-       for(int i = 1; i < filesToLink.size(); i++){
-           DBConnection.linkFiles(filesToLink.get(0).getId(), filesToLink.get(i).getId());
-       }
+        for (int i = 1; i < filesToLink.size(); i++) {
+            DBConnection.linkFiles(filesToLink.get(0).getId(), filesToLink.get(i).getId());
+        }
         updateLinkedFilesList(filesToLink.get(0).getId());
     }
 
@@ -302,55 +312,55 @@ public class FolderContentPageController implements Initializable {
     }
 
     private void showInfo(VBox box, Document file) {
-     box.setOnMouseClicked((MouseEvent mouseEvent) -> {
-         linkedFilesObs.clear();
-         if(!mouseEvent.isControlDown()){
-             filesToLink.clear();
-         for(VBox vbox : selectedBoxes){
-             vbox.setStyle("fx-background-color: none");
-         }
-         selectedBoxes.clear();
-         box.setStyle("-fx-background-color: #e2e2e2");
-               selectedBoxes.add(box);
-               filesToLink.add(file);
-               updateLinkedFilesList(filesToLink.get(0).getId());
- 
-         }else if(selectedBoxes.contains(box)){
-             selectedBoxes.remove(box);
-             box.setStyle("fx-background-color: none");
-         } else {
-                 box.setStyle("-fx-background-color: #e2e2e2");
-               selectedBoxes.add(box);
-               filesToLink.add(file);
-                 }
-         
-        
-        fileTypeLabel.setVisible(true);
-        fileSizeLabel.setVisible(true);
-        fileDateLabel.setVisible(true);
-        
-        exportButton.setVisible(true);
-         
-        linkedButton.setVisible(true);
-         if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-            if(mouseEvent.getClickCount() == 2){
-                ClassLoader classLoader = getClass().getClassLoader();
-                
-                final String dir = System.getProperty("user.dir");
-                File encryptedFile = new File(dir + "/src/savedFiles/" + file.getName() + ".encrypted");
-                File decryptedFile = new File(dir + "/src/tempFiles/" + file.getName() + "." + file.getType());
-                
-                try {
-                    fileProcessor(Cipher.DECRYPT_MODE, key, encryptedFile, decryptedFile);
-                } catch (InvalidKeyException ex) {
-                    Logger.getLogger(FolderContentPageController.class.getName()).log(Level.SEVERE, null, ex);
+        box.setOnMouseClicked((MouseEvent mouseEvent) -> {
+            tagBox.getChildren().clear();
+            linkedFilesObs.clear();
+            if (!mouseEvent.isControlDown()) {
+                filesToLink.clear();
+                for (VBox vbox : selectedBoxes) {
+                    vbox.setStyle("fx-background-color: none");
                 }
-                
-                DesktopApi.open(decryptedFile);
-            
+                selectedBoxes.clear();
+                box.setStyle("-fx-background-color: #e2e2e2");
+                selectedBoxes.add(box);
+                filesToLink.add(file);
+                updateLinkedFilesList(filesToLink.get(0).getId());
+
+            } else if (selectedBoxes.contains(box)) {
+                selectedBoxes.remove(box);
+                box.setStyle("fx-background-color: none");
+            } else {
+                box.setStyle("-fx-background-color: #e2e2e2");
+                selectedBoxes.add(box);
+                filesToLink.add(file);
+            }
+
+            fileTypeLabel.setVisible(true);
+            fileSizeLabel.setVisible(true);
+            fileDateLabel.setVisible(true);
+
+            exportButton.setVisible(true);
+
+            linkedButton.setVisible(true);
+            if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+                if (mouseEvent.getClickCount() == 2) {
+                    ClassLoader classLoader = getClass().getClassLoader();
+
+                    final String dir = System.getProperty("user.dir");
+                    File encryptedFile = new File(dir + "/src/savedFiles/" + file.getName() + ".encrypted");
+                    File decryptedFile = new File(dir + "/src/tempFiles/" + file.getName() + "." + file.getType());
+
+                    try {
+                        fileProcessor(Cipher.DECRYPT_MODE, key, encryptedFile, decryptedFile);
+                    } catch (InvalidKeyException ex) {
+                        Logger.getLogger(FolderContentPageController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    DesktopApi.open(decryptedFile);
+
                 }
                 //linkFiles(file);
-                
+
                 nameLabel.setText(filesToLink.get(0).getName());
                 nameLabel.setWrapText(true);
                 typeLabel.setText(filesToLink.get(0).getType() + " " + "fil");
@@ -365,12 +375,45 @@ public class FolderContentPageController implements Initializable {
                 String fileDate = formatter.format(filesToLink.get(0).getDate());
                 dateLabel.setText(fileDate);
                 if (!filesToLink.get(0).getTags().isEmpty()) {
-                    
-                    for(Tag tag : filesToLink.get(0).getTags()){
-                      Label newLabel = new Label();  
-                      newLabel.setText(tag.getName());
-                      
+                    tagBox.getChildren().removeAll(tagBox.getChildren());
+                    tagBox.getRowConstraints().clear();
+                    int columnCounter = 0;
+                    int rowCounter = 0;
+                    for (Tag tag : filesToLink.get(0).getTags()) {
+                        Label newLabel = new Label();
+                        newLabel.setText(tag.toString());
+                        newLabel.setCursor(Cursor.HAND);
+                        newLabel.setFont(Font.font("Arial", 12));
+                        newLabel.hoverProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean show) -> {
+                            if (show) {
+                                newLabel.setTextFill(Color.CORNFLOWERBLUE);
+                            } else {
+                                newLabel.setTextFill(Color.BLACK);
+                            }
+                        });
+                        newLabel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent mouseEvent) {
+                                System.out.println(newLabel.getText().substring(1));
+                                searchBox.setText(newLabel.getText().substring(1));
+                                //searchBox.getEventDispatcher();
+                                searchBox.fireEvent(new KeyEvent(KeyEvent.KEY_PRESSED, "", "", KeyCode.ENTER, true, true, true, true));
+                            }
+                        });
+
+                        if (columnCounter < 3) {
+                            tagBox.add(newLabel, columnCounter, rowCounter);
+                        } else {
+                            rowCounter++;
+                            columnCounter = 0;
+                            tagBox.add(newLabel, columnCounter, rowCounter);
+                            RowConstraints row = new RowConstraints();
+                            row.setMinHeight(10);
+                            tagBox.getRowConstraints().add(row);
+                        }
+                        columnCounter++;
                     }
+
                     //fileTagLabel.setVisible(true);
                     //tagLabel.setText("" + file.getTags());
                 } else {
@@ -385,8 +428,6 @@ public class FolderContentPageController implements Initializable {
         });
 
     }
-           
-
 
     @FXML
     private void addTag() throws IOException {
@@ -414,7 +455,7 @@ public class FolderContentPageController implements Initializable {
         //Method from displayChoosenFiles(). I need everything but from another dbconnection directory
 
         ArrayList<Document> files = DBConnection.search(searchBox.getText().toLowerCase() + event.getText().toLowerCase());
-        if(searchBox.getText().equals("")){
+        if (searchBox.getText().equals("")) {
             files = DBConnection.selectFromFiles();
         }
         for (Document doc : files) {
@@ -505,14 +546,14 @@ public class FolderContentPageController implements Initializable {
             System.out.println(e.getMessage());
         }
     }
-    
-    private void updateLinkedFilesList(int a){
+
+    private void updateLinkedFilesList(int a) {
         ArrayList<Document> files = DBConnection.getLinkedFiles(a);
-        for(Document doc : files){
-            if(doc.getId()!=filesToLink.get(0).getId()){
+        for (Document doc : files) {
+            if (doc.getId() != filesToLink.get(0).getId()) {
                 linkedFilesObs.add(doc.getName());
             }
-            
+
         }
         //linkedFilesObs.addAll(files);
     }
