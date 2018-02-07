@@ -40,6 +40,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -351,7 +352,12 @@ public class FolderContentPageController implements Initializable {
     private void search(KeyEvent event) {
         oList.clear();
         //Method from displayChoosenFiles(). I need everything but from another dbconnection directory
-        //
+        
+//        if(event.getCode()==KeyCode.BACK_SPACE){
+//            //searchBox.deletePreviousChar();
+//            //oList.clear();
+//            System.out.println("deleted chars: " + searchBox.getText());
+//        }
 
         ArrayList<Document> files = DBConnection.search(searchBox.getText().toLowerCase() + event.getText().toLowerCase());
         for (Document doc : files) {
@@ -380,7 +386,9 @@ public class FolderContentPageController implements Initializable {
             fileName.setMaxWidth(120);
             if (columnCounter < 4) {
                 gridPane.add(vBox, columnCounter, rowCounter);
+                System.out.println("1111111");
             } else {
+                System.out.println("2222222");
                 rowCounter++;
                 columnCounter = 0;
                 gridPane.add(vBox, columnCounter, rowCounter);
