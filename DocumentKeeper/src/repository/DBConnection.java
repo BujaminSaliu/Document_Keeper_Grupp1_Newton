@@ -174,10 +174,23 @@ public class DBConnection {
             results.close();
             stmt.close();
             //this searches for documents for same name.
-            ArrayList<Document> fileList2 = searchForFileNames(search);
+            ArrayList<Document> names = searchForFileNames(search);
+            //this searches for documents for same type.
+            ArrayList<Document> types;
+            //this if makes sure ".jpg" and "jpg" results in a successful search
+            if(search.indexOf(".")==0){
+                types = searchForFileTypes(search.substring(1));
+            }else{
+               types = searchForFileTypes(search); 
+            }
+            
 
             //Adding and removing same object to avoid duplicates
-            for(Document doc : fileList2){
+            for(Document doc : names){
+                fileList.removeIf(p -> p.getId() == (doc.getId()));
+                fileList.add(doc);
+            }
+            for(Document doc : types){
                 fileList.removeIf(p -> p.getId() == (doc.getId()));
                 fileList.add(doc);
             }
@@ -220,6 +233,39 @@ public class DBConnection {
         }
         return fileList;
     }
+    
+    public static ArrayList<Document> searchForFileTypes(String search) {
+        ArrayList<Document> fileList = new ArrayList<>();
+        try {
+            stmt = conn.createStatement();
+            ResultSet results = stmt.executeQuery("SELECT f.* FROM FILES f where f.TYPE like '"+search+"%' or UPPER(f.TYPE) like UPPER('"+search+"%')");
+
+            while (results.next()) {
+                int id = results.getInt(1);
+                String restName = results.getString(2);
+                Date date = results.getDate(3);
+                int size = results.getInt(4);
+                String type = results.getString(5);
+                String path = results.getString(6);
+                ArrayList<Tag> tagList = new ArrayList<>();
+                tagList = selectFromTagsFromFile(id);
+
+                Document file = new Document(id, restName, date, type, size, path);
+                file.setTags(tagList);
+                fileList.add(file);
+
+            }
+            results.close();
+            stmt.close();
+            return fileList;
+
+        } catch (SQLException sqlExcept) {
+            sqlExcept.printStackTrace();
+        }
+        return fileList;
+    }
+    
+    
 
 }
 
