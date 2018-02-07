@@ -370,19 +370,14 @@ public class FolderContentPageController implements Initializable {
     private void search(KeyEvent event) {
         oList.clear();
         //Method from displayChoosenFiles(). I need everything but from another dbconnection directory
-
         
-//        if(event.getCode()==KeyCode.BACK_SPACE){
-//            //searchBox.deletePreviousChar();
-//            //oList.clear();
-//            System.out.println("deleted chars: " + searchBox.getText());
-//        }
-
         ArrayList<Document> files = DBConnection.search(searchBox.getText().toLowerCase() + event.getText().toLowerCase());
         for (Document doc : files) {
             oList.add(doc);
         }
+        
         gridPane.getChildren().removeAll(gridPane.getChildren());
+        gridPane.getRowConstraints().clear();
         gridPane.add(newFileBox, 0, 0);
         int columnCounter = 1;
         int rowCounter = 0;
@@ -405,16 +400,16 @@ public class FolderContentPageController implements Initializable {
             fileName.setMaxWidth(120);
             if (columnCounter < 4) {
                 gridPane.add(vBox, columnCounter, rowCounter);
-                System.out.println("1111111");
             } else {
-                System.out.println("2222222");
                 rowCounter++;
                 columnCounter = 0;
                 gridPane.add(vBox, columnCounter, rowCounter);
                 RowConstraints row = new RowConstraints();
                 row.setMinHeight(134);
                 gridPane.setPadding(new Insets(5, 0, 0, 0));
-                gridPane.getRowConstraints().add(row);
+                //if(!searchBox.getText().equals("")){
+                  gridPane.getRowConstraints().add(row);  
+                //}
                 scrollPaneStartPage.setContent(gridPane);
             }
             columnCounter++;
