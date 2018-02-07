@@ -25,7 +25,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -41,7 +40,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -184,13 +182,16 @@ public class FolderContentPageController implements Initializable {
                     oList.add(doc);
                     
                     //Here we encrypt original the file  
-                    //creating the encrypted file
+                    //creating a path to the encrypted file
                     File encryptedFile = new File(dir + "/src/savedFiles/" + doc.getName()+ ".encrypted");
                 
                 try {
                     
                     //Call to encryption method file processor whitch uses "AES" algorithm
                     fileProcessor(Cipher.ENCRYPT_MODE,key,source,encryptedFile);
+                    
+                    //Delete the original one
+                    source.delete();
                     
                     //just to check if the encryption done!
                     System.out.println("Encrypted Successfully!");    
