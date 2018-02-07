@@ -55,8 +55,37 @@ public class DBConnection {
             stmt.close();
         } catch (SQLException sqlExcept) {
             System.out.println("THIS FILES ARE ALREADY LINKED");
-
-        }
+            
+        }  
+    }
+        
+    public static ArrayList<Document> getLinkedFiles(int a){
+         ArrayList<Document> fileList = new ArrayList<>();
+        try {
+            stmt = conn.createStatement();
+            ResultSet results = stmt.executeQuery("SELECT DISTINCT FILES.* FROM LINKED_FILES, FILES WHERE (FILE_A ="+ a +" OR FILE_B ="+ a +") AND FILE_A = ID OR FILE_B = ID");
+            while (results.next()) {
+               int id = results.getInt(1);
+                String restName = results.getString(2);
+                Date date = results.getDate(3);
+                int size = results.getInt(4);
+                String type = results.getString(5);
+                String path = results.getString(6);
+                ArrayList<Tag> tagList = new ArrayList<>();
+                tagList=selectFromTagsFromFile(id);
+                Document file = new Document(id, restName, date, type, size ,path);
+                file.setTags(tagList);
+                fileList.add(file);
+            }
+            results.close();
+            stmt.close();
+             } catch (SQLException sqlExcept) {
+            System.out.println("Could not get linked files");
+            
+        }  
+            return fileList;
+      
+       
     }
 
     public static void insertIntoFiles(String name, double size, String type, String path, List<Tag> tags) throws SQLException {
