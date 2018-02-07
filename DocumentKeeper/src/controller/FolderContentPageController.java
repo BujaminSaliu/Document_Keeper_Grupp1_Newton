@@ -95,23 +95,24 @@ public class FolderContentPageController implements Initializable {
     @FXML
     private Label nameLabel, typeLabel, sizeLabel, dateLabel, tagLabel;
     @FXML
-    private ListView<Document> listToLink;
+    private ListView<String> listToLink;
 
     public static ObservableList<Document> oList = FXCollections.observableArrayList();
+     public static ObservableList<String> linkedFilesObs = FXCollections.observableArrayList();
 
     private String name = null;
     private String type = null;
 
     String key = "This is a secret";
 
-    @FXML
-    private VBox selectedBox;
+    private ArrayList<VBox> selectedBoxes = new ArrayList<VBox>();
+    private ArrayList<Document> filesToLink = new ArrayList<>();
 
     @FXML
     private void linkFiles(Document fileA) {
         ArrayList<Document> files = DBConnection.selectFromFiles();
         oList = FXCollections.observableArrayList(files);
-        listToLink.setItems(oList);
+        //listToLink.setItems(oList);
         buttonLink.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -122,9 +123,9 @@ public class FolderContentPageController implements Initializable {
 
     @FXML
     private void pushTheButton(Document fileA) {
-        int fileB = listToLink.getSelectionModel().getSelectedItem().getId();
-        System.out.println(" fileA.id " + fileA.getId() + " fileB.id " + fileB);
-        DBConnection.linkFiles(fileA.getId(), fileB);
+       // int fileB = listToLink.getSelectionModel().getSelectedItem().getId();
+       // System.out.println(" fileA.id " + fileA.getId() + " fileB.id " + fileB);
+       // DBConnection.linkFiles(fileA.getId(), fileB);
     }
 
     @FXML
@@ -221,6 +222,14 @@ public class FolderContentPageController implements Initializable {
 
         }
     }
+    
+    @FXML
+    private void linkFiles(ActionEvent event) throws IOException {
+       for(int i = 1; i < filesToLink.size(); i++){
+           DBConnection.linkFiles(filesToLink.get(0).getId(), filesToLink.get(i).getId());
+       }
+        updateLinkedFilesList(filesToLink.get(0).getId());
+    }
 
     @FXML
     private void exportFileButtonAction() {
@@ -294,11 +303,28 @@ public class FolderContentPageController implements Initializable {
 
     private void showInfo(VBox box, Document file) {
      box.setOnMouseClicked((MouseEvent mouseEvent) -> {
-         if(selectedBox != null){
-             selectedBox.setStyle("-fx-background-color: none");
+         linkedFilesObs.clear();
+         if(!mouseEvent.isControlDown()){
+             filesToLink.clear();
+         for(VBox vbox : selectedBoxes){
+             vbox.setStyle("fx-background-color: none");
          }
-               selectedBox = box; 
-               box.setStyle("-fx-background-color: #e2e2e2");
+         selectedBoxes.clear();
+         box.setStyle("-fx-background-color: #e2e2e2");
+               selectedBoxes.add(box);
+               filesToLink.add(file);
+               updateLinkedFilesList(filesToLink.get(0).getId());
+ 
+         }else if(selectedBoxes.contains(box)){
+             selectedBoxes.remove(box);
+             box.setStyle("fx-background-color: none");
+         } else {
+                 box.setStyle("-fx-background-color: #e2e2e2");
+               selectedBoxes.add(box);
+               filesToLink.add(file);
+                 }
+         
+        
         fileTypeLabel.setVisible(true);
         fileSizeLabel.setVisible(true);
         fileDateLabel.setVisible(true);
@@ -323,24 +349,24 @@ public class FolderContentPageController implements Initializable {
                 DesktopApi.open(decryptedFile);
             
                 }
-                linkFiles(file);
-                System.out.println(file.getName());
-                nameLabel.setText(file.getName());
+                //linkFiles(file);
+                
+                nameLabel.setText(filesToLink.get(0).getName());
                 nameLabel.setWrapText(true);
-                typeLabel.setText(file.getType() + " " + "fil");
-                if (file.getSize() > 1000000) {
-                    int fileSize = (file.getSize() / 1000) / 1000;
+                typeLabel.setText(filesToLink.get(0).getType() + " " + "fil");
+                if (filesToLink.get(0).getSize() > 1000000) {
+                    int fileSize = (filesToLink.get(0).getSize() / 1000) / 1000;
                     //double roundedFileSize = Math.round(fileSize*100.0)/100.0;
                     sizeLabel.setText(String.valueOf(fileSize) + " MB");
                 } else {
-                    sizeLabel.setText(String.valueOf(file.getSize() / 1000) + " KB");
+                    sizeLabel.setText(String.valueOf(filesToLink.get(0).getSize() / 1000) + " KB");
                 }
                 Format formatter = new SimpleDateFormat("yyyy-MM-dd");
-                String fileDate = formatter.format(file.getDate());
+                String fileDate = formatter.format(filesToLink.get(0).getDate());
                 dateLabel.setText(fileDate);
-                if (!file.getTags().isEmpty()) {
+                if (!filesToLink.get(0).getTags().isEmpty()) {
                     
-                    for(Tag tag : file.getTags()){
+                    for(Tag tag : filesToLink.get(0).getTags()){
                       Label newLabel = new Label();  
                       newLabel.setText(tag.getName());
                       
@@ -352,7 +378,7 @@ public class FolderContentPageController implements Initializable {
                     tagLabel.setText("");
                 }
 
-                saveFileInfo(file.getName(), file.getType());
+                saveFileInfo(filesToLink.get(0).getName(), filesToLink.get(0).getType());
 
             }
 
@@ -441,7 +467,7 @@ public class FolderContentPageController implements Initializable {
 
         ArrayList<Document> files = DBConnection.selectFromFiles();
         oList = FXCollections.observableArrayList(files);
-
+        listToLink.setItems(linkedFilesObs);
         gridPane = new GridPane();
         gridPane.setMinWidth(527);
         gridPane.setAlignment(Pos.CENTER);
@@ -478,5 +504,16 @@ public class FolderContentPageController implements Initializable {
                 | IllegalBlockSizeException | IOException e) {
             System.out.println(e.getMessage());
         }
+    }
+    
+    private void updateLinkedFilesList(int a){
+        ArrayList<Document> files = DBConnection.getLinkedFiles(a);
+        for(Document doc : files){
+            if(doc.getId()!=filesToLink.get(0).getId()){
+                linkedFilesObs.add(doc.getName());
+            }
+            
+        }
+        //linkedFilesObs.addAll(files);
     }
 }

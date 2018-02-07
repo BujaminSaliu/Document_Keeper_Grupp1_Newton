@@ -142,7 +142,7 @@
                         </HBox>
                         <HBox alignment="TOP_CENTER" prefHeight="37.0" prefWidth="200.0">
                            <children>
-                              <Button fx:id="linkedButton" mnemonicParsing="false" prefHeight="27.0" prefWidth="79.0" stylesheets="@../style/newCascadeStyleSheet.css" text="LÄNKA FIL" visible="false">
+                              <Button fx:id="linkedButton" mnemonicParsing="false" onAction="#linkFiles" prefHeight="27.0" prefWidth="79.0" stylesheets="@../style/newCascadeStyleSheet.css" text="LÄNKA FIL" visible="false">
                                  <HBox.margin>
                                     <Insets right="10.0" />
                                  </HBox.margin>

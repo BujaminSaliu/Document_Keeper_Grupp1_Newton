@@ -63,7 +63,7 @@ public class DBConnection {
          ArrayList<Document> fileList = new ArrayList<>();
         try {
             stmt = conn.createStatement();
-            ResultSet results = stmt.executeQuery("SELECT DISTINCT FILES.* FROM LINKED_FILES, FILES WHERE (FILE_A ="+ a +" OR FILE_B ="+ a +") AND FILE_A = ID OR FILE_B = ID");
+            ResultSet results = stmt.executeQuery("SELECT DISTINCT FILES.* FROM LINKED_FILES, FILES WHERE (FILE_A ="+ a +" OR FILE_B ="+ a +") AND (FILE_A = ID OR FILE_B = ID)");
             while (results.next()) {
                int id = results.getInt(1);
                 String restName = results.getString(2);
