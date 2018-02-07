@@ -27,6 +27,8 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -36,6 +38,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -69,7 +72,7 @@ import repository.DBConnection;
 public class FolderContentPageController implements Initializable {
 
     @FXML
-    private Button addFileButton;
+    private Button addFileButton,buttonLink;
     
     @FXML
     private Label infoLabel, fileTypeLabel,fileSizeLabel,fileDateLabel, fileTagLabel;
@@ -92,18 +95,34 @@ public class FolderContentPageController implements Initializable {
     private TextField searchBox;
     @FXML
     private Label nameLabel, typeLabel, sizeLabel, dateLabel, tagLabel;
+    @FXML
+    private ListView<Document> listToLink;
 
 
     public static ObservableList<Document> oList = FXCollections.observableArrayList();
 
     private String name = null;
     private String type = null;
-    
-
-    
+    @FXML
     private VBox selectedBox;
-    
 
+    @FXML
+    private void linkFiles(Document fileA){
+        ArrayList<Document> files = DBConnection.selectFromFiles();
+        oList = FXCollections.observableArrayList(files);
+        listToLink.setItems(oList);
+        buttonLink.setOnAction(new EventHandler<ActionEvent>() {
+        @Override public void handle(ActionEvent e) {
+            pushTheButton(fileA);
+        }
+        });
+    }
+    @FXML
+    private void pushTheButton(Document fileA){
+        int fileB = listToLink.getSelectionModel().getSelectedItem().getId();
+         System.out.println(" fileA.id "+fileA.getId()+" fileB.id "+fileB);
+         DBConnection.linkFiles(fileA.getId(),fileB);
+    }
     @FXML
     private void addFileButtonAction(ActionEvent event) throws IOException {
         filesAdded = false;
@@ -252,7 +271,6 @@ public class FolderContentPageController implements Initializable {
             fileImg.setImage(new Image("/fxml/fileImage.png"));
             fileImg.setFitHeight(78);
             fileImg.setFitWidth(63);
-            
             vBox.getChildren().addAll(fileImg, fileName);
             showInfo(vBox, file);
             fileName.setMaxWidth(120);
@@ -293,6 +311,7 @@ public class FolderContentPageController implements Initializable {
                 File dest = new File(dir + "/src/savedFiles/" + file.getName() + "." + file.getType());
                 DesktopApi.edit(dest);
             }
+             linkFiles(file);
              System.out.println(file.getName());
             nameLabel.setText(file.getName());
             nameLabel.setWrapText(true);
@@ -304,7 +323,6 @@ public class FolderContentPageController implements Initializable {
                 }else {
                     sizeLabel.setText(String.valueOf(file.getSize()/1000)+ " KB");
                 }
-                
                 Format formatter = new SimpleDateFormat("yyyy-MM-dd");
                 String fileDate = formatter.format(file.getDate());
                 dateLabel.setText(fileDate);
