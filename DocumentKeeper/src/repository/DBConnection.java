@@ -183,7 +183,8 @@ public class DBConnection {
             }else{
                types = searchForFileTypes(search); 
             }
-            
+            //this list will be "code" searched instead of "sql" searched.
+            ArrayList<Document> dates = DBConnection.selectFromFiles();
 
             //Adding and removing same object to avoid duplicates
             for(Document doc : names){
@@ -193,6 +194,11 @@ public class DBConnection {
             for(Document doc : types){
                 fileList.removeIf(p -> p.getId() == (doc.getId()));
                 fileList.add(doc);
+            }
+            for(Document doc : dates){
+                //if(doc.getDate().)
+              //  fileList.removeIf(p -> p.getId() == (doc.getId()));
+               // fileList.add(doc);
             }
             
             return fileList;

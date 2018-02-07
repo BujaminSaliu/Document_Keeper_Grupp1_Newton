@@ -20,12 +20,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -41,7 +42,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -176,30 +176,33 @@ public class FolderContentPageController implements Initializable {
                 @Override
                 protected Void call() throws Exception {
                     for (Document doc : filesToAdd) {
+                
+                    ClassLoader classLoader = getClass().getClassLoader();
+                    final String dir = System.getProperty("user.dir");
+                    
+                    File source = new File(doc.getPath());
+                    File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
 
-                        ClassLoader classLoader = getClass().getClassLoader();
-                        final String dir = System.getProperty("user.dir");
-
-                        File source = new File(doc.getPath());
-                        File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
-
-                        oList.add(doc);
-
-                        //Here we encrypt original the file  
-                        //creating the encrypted file
-                        File encryptedFile = new File(dir + "/src/savedFiles/" + doc.getName() + ".encrypted");
-
-                        try {
-
-                            //Call to encryption method file processor whitch uses "AES" algorithm
-                            fileProcessor(Cipher.ENCRYPT_MODE, key, source, encryptedFile);
-
-                            //just to check if the encryption done!
-                            System.out.println("Encrypted Successfully!");
-                        } catch (Exception ex) {
-                            System.out.println(ex.getMessage());
-                        }
-                        oList.add(doc);
+                    oList.add(doc);
+                    //Here we encrypt original the file  
+                    //creating a path to the encrypted file
+                    File encryptedFile = new File(dir + "/src/savedFiles/" + doc.getName()+ ".encrypted");
+                
+                try {
+                    
+                    //Call to encryption method file processor whitch uses "AES" algorithm
+                    fileProcessor(Cipher.ENCRYPT_MODE,key,source,encryptedFile);
+                    
+                    //Delete the original one
+                    source.delete();
+                    
+                    //just to check if the encryption done!
+                    System.out.println("Encrypted Successfully!");    
+                } 
+                catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
+                oList.add(doc);
 
                         if (filesToAdd.size() == 1) {
                             Platform.runLater(() -> infoLabel.setText("Filen lades till!"));
@@ -290,25 +293,35 @@ public class FolderContentPageController implements Initializable {
     }
 
     private void showInfo(VBox box, Document file) {
-        box.setOnMouseClicked((MouseEvent mouseEvent) -> {
-            if (selectedBox != null) {
-                selectedBox.setStyle("-fx-background-color: none");
-            }
-            selectedBox = box;
-            box.setStyle("-fx-background-color: #e2e2e2");
-            fileTypeLabel.setVisible(true);
-            fileSizeLabel.setVisible(true);
-            fileDateLabel.setVisible(true);
-
-            exportButton.setVisible(true);
-
-            linkedButton.setVisible(true);
-            if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-                if (mouseEvent.getClickCount() == 2) {
-                    ClassLoader classLoader = getClass().getClassLoader();
-                    final String dir = System.getProperty("user.dir");
-                    File dest = new File(dir + "/src/savedFiles/" + file.getName() + "." + file.getType());
-                    DesktopApi.edit(dest);
+     box.setOnMouseClicked((MouseEvent mouseEvent) -> {
+         if(selectedBox != null){
+             selectedBox.setStyle("-fx-background-color: none");
+         }
+               selectedBox = box; 
+               box.setStyle("-fx-background-color: #e2e2e2");
+        fileTypeLabel.setVisible(true);
+        fileSizeLabel.setVisible(true);
+        fileDateLabel.setVisible(true);
+        
+        exportButton.setVisible(true);
+         
+        linkedButton.setVisible(true);
+         if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+            if(mouseEvent.getClickCount() == 2){
+                ClassLoader classLoader = getClass().getClassLoader();
+                
+                final String dir = System.getProperty("user.dir");
+                File encryptedFile = new File(dir + "/src/savedFiles/" + file.getName() + ".encrypted");
+                File decryptedFile = new File(dir + "/src/tempFiles/" + file.getName() + "." + file.getType());
+                
+                try {
+                    fileProcessor(Cipher.DECRYPT_MODE, key, encryptedFile, decryptedFile);
+                } catch (InvalidKeyException ex) {
+                    Logger.getLogger(FolderContentPageController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                DesktopApi.open(decryptedFile);
+            
                 }
                 linkFiles(file);
                 System.out.println(file.getName());
@@ -346,6 +359,8 @@ public class FolderContentPageController implements Initializable {
         });
 
     }
+           
+
 
     @FXML
     private void addTag() throws IOException {
