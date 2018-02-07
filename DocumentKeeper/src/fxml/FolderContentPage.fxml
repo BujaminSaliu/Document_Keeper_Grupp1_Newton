@@ -38,7 +38,7 @@
                               <Insets right="5.0" top="20.0" />
                            </HBox.margin>
                         </ImageView>
-                        <TextField fx:id="searchBox" onKeyTyped="#search" prefHeight="27.0" prefWidth="228.0" promptText=" Sök..." style="-fx-background-color: black; -fx-text-fill: #ddda5f;">
+                        <TextField fx:id="searchBox" onKeyPressed="#search" prefHeight="27.0" prefWidth="228.0" promptText=" Sök..." style="-fx-background-color: black; -fx-text-fill: #ddda5f;">
                            <HBox.margin>
                               <Insets top="20.0" />
                            </HBox.margin>

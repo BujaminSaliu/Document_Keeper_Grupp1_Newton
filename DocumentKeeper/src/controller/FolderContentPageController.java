@@ -388,6 +388,9 @@ public class FolderContentPageController implements Initializable {
         //Method from displayChoosenFiles(). I need everything but from another dbconnection directory
 
         ArrayList<Document> files = DBConnection.search(searchBox.getText().toLowerCase() + event.getText().toLowerCase());
+        if(searchBox.getText().equals("")){
+            files = DBConnection.selectFromFiles();
+        }
         for (Document doc : files) {
             oList.add(doc);
         }

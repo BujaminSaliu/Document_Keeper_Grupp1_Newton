@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package repository;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -15,13 +16,16 @@ import java.util.Date;
 import java.util.List;
 import models.Document;
 import models.Tag;
+
 /**
  *
  * @author rille
  */
 public class DBConnection {
+
     private static Statement stmt = null;
     private static Connection conn = null;
+
     public static void createConnection() {
         try {
             String url = "jdbc:derby://localhost:1527/DocumentKeeperDB";
@@ -32,6 +36,7 @@ public class DBConnection {
             System.out.println(ex.getMessage());
         }
     }
+
     public static void insertIntoTags(String test) {
         try {
             stmt = conn.createStatement();
@@ -41,17 +46,19 @@ public class DBConnection {
             sqlExcept.printStackTrace();
         }
     }
-        public static void linkFiles(int a, int b){
+
+    public static void linkFiles(int a, int b) {
         try {
             stmt = conn.createStatement();
-            stmt.execute("INSERT INTO root.LINKED_FILES (FILE_A, FILE_B) VALUES ("+a+","+b+")");
-            System.out.println("LINKED file with index: "+b+" and file with index: "+a);
+            stmt.execute("INSERT INTO root.LINKED_FILES (FILE_A, FILE_B) VALUES (" + a + "," + b + ")");
+            System.out.println("LINKED file with index: " + b + " and file with index: " + a);
             stmt.close();
         } catch (SQLException sqlExcept) {
             System.out.println("THIS FILES ARE ALREADY LINKED");
-            
+
         }
     }
+
     public static void insertIntoFiles(String name, double size, String type, String path, List<Tag> tags) throws SQLException {
         Statement stmt = null;
         ResultSet rs;
@@ -69,6 +76,7 @@ public class DBConnection {
         rs.close();
         stmt.close();
     }
+
     public static void insertIntoFile_Has_Tags(int fileId, int tagId) {
         try {
             stmt = conn.createStatement();
@@ -79,6 +87,7 @@ public class DBConnection {
             sqlExcept.printStackTrace();
         }
     }
+
     public static ArrayList<Tag> selectFromTags() {
         ArrayList<Tag> tagList = new ArrayList<>();
         try {
@@ -113,8 +122,8 @@ public class DBConnection {
                 String type = results.getString(5);
                 String path = results.getString(6);
                 ArrayList<Tag> tagList = new ArrayList<>();
-                tagList=selectFromTagsFromFile(id);
-                Document file = new Document(id, restName, date, type, size ,path);
+                tagList = selectFromTagsFromFile(id);
+                Document file = new Document(id, restName, date, type, size, path);
                 file.setTags(tagList);
                 fileList.add(file);
             }
@@ -126,7 +135,6 @@ public class DBConnection {
         }
         return fileList;
     }
-
 
     public static ArrayList<Tag> selectFromTagsFromFile(int fileId) {
         ArrayList<Tag> tagList = new ArrayList<>();
@@ -150,11 +158,11 @@ public class DBConnection {
 
     public static ArrayList<Document> search(String search) {
         ArrayList<Document> fileList = new ArrayList<>();
-        
+
         //this searches for documents with same tags
         try {
             stmt = conn.createStatement();
-            ResultSet results = stmt.executeQuery("SELECT distinct f.* FROM FILES f INNER JOIN FILE_HAS_TAGS ft on f.ID = ft.FILE_ID INNER JOIN TAGS t on t.ID = ft.TAG_ID where t.NAME like '"+search+"%' or UPPER(t.NAME) like UPPER('"+search+"%') order by f.ID");
+            ResultSet results = stmt.executeQuery("SELECT distinct f.* FROM FILES f INNER JOIN FILE_HAS_TAGS ft on f.ID = ft.FILE_ID INNER JOIN TAGS t on t.ID = ft.TAG_ID where t.NAME like '" + search + "%' or UPPER(t.NAME) like UPPER('" + search + "%') order by f.ID");
 
             while (results.next()) {
                 int id = results.getInt(1);
@@ -178,29 +186,31 @@ public class DBConnection {
             //this searches for documents for same type.
             ArrayList<Document> types;
             //this if makes sure ".jpg" and "jpg" results in a successful search
-            if(search.indexOf(".")==0){
+            if (search.indexOf(".") == 0) {
                 types = searchForFileTypes(search.substring(1));
-            }else{
-               types = searchForFileTypes(search); 
+            } else {
+                types = searchForFileTypes(search);
             }
             //this list will be "code" searched instead of "sql" searched.
             ArrayList<Document> dates = DBConnection.selectFromFiles();
 
             //Adding and removing same object to avoid duplicates
-            for(Document doc : names){
+            for (Document doc : names) {
                 fileList.removeIf(p -> p.getId() == (doc.getId()));
                 fileList.add(doc);
             }
-            for(Document doc : types){
+            for (Document doc : types) {
                 fileList.removeIf(p -> p.getId() == (doc.getId()));
                 fileList.add(doc);
             }
-            for(Document doc : dates){
-                //if(doc.getDate().)
-              //  fileList.removeIf(p -> p.getId() == (doc.getId()));
-               // fileList.add(doc);
+            for (Document doc : dates) {
+                if (doc.getDate().toString().contains(search)) {
+                    fileList.removeIf(p -> p.getId() == (doc.getId()));
+                    fileList.add(doc);
+                }
+
             }
-            
+
             return fileList;
 
         } catch (SQLException sqlExcept) {
@@ -213,7 +223,7 @@ public class DBConnection {
         ArrayList<Document> fileList = new ArrayList<>();
         try {
             stmt = conn.createStatement();
-            ResultSet results = stmt.executeQuery("SELECT f.* FROM FILES f where f.NAME like '" + search + "%' or UPPER(f.NAME) like UPPER('"+search+"%')");
+            ResultSet results = stmt.executeQuery("SELECT f.* FROM FILES f where f.NAME like '" + search + "%' or UPPER(f.NAME) like UPPER('" + search + "%')");
 
             while (results.next()) {
                 int id = results.getInt(1);
@@ -239,12 +249,12 @@ public class DBConnection {
         }
         return fileList;
     }
-    
+
     public static ArrayList<Document> searchForFileTypes(String search) {
         ArrayList<Document> fileList = new ArrayList<>();
         try {
             stmt = conn.createStatement();
-            ResultSet results = stmt.executeQuery("SELECT f.* FROM FILES f where f.TYPE like '"+search+"%' or UPPER(f.TYPE) like UPPER('"+search+"%')");
+            ResultSet results = stmt.executeQuery("SELECT f.* FROM FILES f where f.TYPE like '" + search + "%' or UPPER(f.TYPE) like UPPER('" + search + "%')");
 
             while (results.next()) {
                 int id = results.getInt(1);
@@ -270,8 +280,5 @@ public class DBConnection {
         }
         return fileList;
     }
-    
-    
 
 }
-
