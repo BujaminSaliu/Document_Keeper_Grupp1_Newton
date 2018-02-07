@@ -41,6 +41,17 @@ public class DBConnection {
             sqlExcept.printStackTrace();
         }
     }
+        public static void linkFiles(int a, int b){
+        try {
+            stmt = conn.createStatement();
+            stmt.execute("INSERT INTO root.LINKED_FILES (FILE_A, FILE_B) VALUES ("+a+","+b+")");
+            System.out.println("LINKED file with index: "+b+" and file with index: "+a);
+            stmt.close();
+        } catch (SQLException sqlExcept) {
+            System.out.println("THIS FILES ARE ALREADY LINKED");
+            
+        }
+    }
     public static void insertIntoFiles(String name, double size, String type, String path, List<Tag> tags) throws SQLException {
         Statement stmt = null;
         ResultSet rs;
@@ -143,7 +154,7 @@ public class DBConnection {
         //this searches for documents with same tags
         try {
             stmt = conn.createStatement();
-            ResultSet results = stmt.executeQuery("SELECT f.* FROM FILES f INNER JOIN FILE_HAS_TAGS ft on f.ID = ft.FILE_ID INNER JOIN TAGS t on t.ID = ft.TAG_ID where t.NAME like '" + search + "%' order by f.ID");
+            ResultSet results = stmt.executeQuery("SELECT distinct f.* FROM FILES f INNER JOIN FILE_HAS_TAGS ft on f.ID = ft.FILE_ID INNER JOIN TAGS t on t.ID = ft.TAG_ID where t.NAME like '"+search+"%' or UPPER(t.NAME) like UPPER('"+search+"%') order by f.ID");
 
             while (results.next()) {
                 int id = results.getInt(1);
