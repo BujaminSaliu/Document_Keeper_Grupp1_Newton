@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.URL;
-import java.nio.file.Files;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
@@ -25,7 +24,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -104,6 +102,9 @@ public class FolderContentPageController implements Initializable {
 
     private String name = null;
     private String type = null;
+    
+    String key = "This is a secret";
+    
     @FXML
     private VBox selectedBox;
 
@@ -180,22 +181,16 @@ public class FolderContentPageController implements Initializable {
                     File source = new File(doc.getPath());
                     File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
 
-                    copyFileUsingJava7Files(source, dest);
                     oList.add(doc);
                     
                     //Here we encrypt original the file  
-                    String key = "This is a secret";
-                
                     //creating the encrypted file
-                    File encryptedFile = new File(doc.getPath() + ".encrypted");
+                    File encryptedFile = new File(dir + "/src/savedFiles/" + doc.getName()+ ".encrypted");
                 
                 try {
                     
                     //Call to encryption method file processor whitch uses "AES" algorithm
                     fileProcessor(Cipher.ENCRYPT_MODE,key,source,encryptedFile);
-                    
-                    //Delete the original file
-                    source.delete();
                     
                     //just to check if the encryption done!
                     System.out.println("Encrypted Successfully!");    
@@ -227,7 +222,7 @@ public class FolderContentPageController implements Initializable {
         try {
         final String dir = System.getProperty("user.dir");
         
-        File dest = new File(dir + "/src/savedFiles/" + name + "." + type);
+        File encryptedFile = new File(dir + "/src/savedFiles/" + name + ".encrypted");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Export file");
         fileChooser.setInitialFileName(name + "." + type);
@@ -237,15 +232,15 @@ public class FolderContentPageController implements Initializable {
         fileChooser.getExtensionFilters().add(extFilter);
         
         File newFile = fileChooser.showSaveDialog(null);
-        
-        if(dest != null) {
-            copyFileUsingJava7Files(dest, newFile.getAbsoluteFile());
-            System.out.println(dest);
-        }
+
+        File decryptedFile = new File(newFile.getAbsolutePath());
+        System.out.println(newFile.getAbsolutePath());
+
+        fileProcessor(Cipher.DECRYPT_MODE, key, encryptedFile, decryptedFile);
+            
         } catch(Exception e){
             System.out.println(e);
         }
-
     }
     
     private void saveFileInfo(String fileName, String fileType){
@@ -414,8 +409,6 @@ public class FolderContentPageController implements Initializable {
             }
             columnCounter++;
         }
-        
-
     }
 
     @Override
@@ -440,10 +433,6 @@ public class FolderContentPageController implements Initializable {
         
     }
 
-    private void copyFileUsingJava7Files(File sourceFile, File destinationFile) throws IOException {
-        Files.copy(sourceFile.toPath(), destinationFile.toPath());
-    }
-
     static void fileProcessor(int cipherMode,String key,File inputFile,File outputFile) throws InvalidKeyException{
 	 try {
 	       Key secretKey = new SecretKeySpec(key.getBytes(), "AES");
@@ -465,6 +454,7 @@ public class FolderContentPageController implements Initializable {
 	    } catch (NoSuchPaddingException | NoSuchAlgorithmException 
                      | BadPaddingException
 	             | IllegalBlockSizeException | IOException e) {
+                System.out.println(e.getMessage());
             }
      }
 }
