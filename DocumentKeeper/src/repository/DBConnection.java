@@ -143,7 +143,7 @@ public class DBConnection {
         //this searches for documents with same tags
         try {
             stmt = conn.createStatement();
-            ResultSet results = stmt.executeQuery("SELECT f.* FROM FILES f INNER JOIN FILE_HAS_TAGS ft on f.ID = ft.FILE_ID INNER JOIN TAGS t on t.ID = ft.TAG_ID where t.NAME like '" + search + "%' order by f.ID");
+            ResultSet results = stmt.executeQuery("SELECT distinct f.* FROM FILES f INNER JOIN FILE_HAS_TAGS ft on f.ID = ft.FILE_ID INNER JOIN TAGS t on t.ID = ft.TAG_ID where t.NAME like '"+search+"%' or UPPER(t.NAME) like UPPER('"+search+"%') order by f.ID");
 
             while (results.next()) {
                 int id = results.getInt(1);

@@ -351,8 +351,6 @@ public class FolderContentPageController implements Initializable {
     private void search(KeyEvent event) {
         oList.clear();
         //Method from displayChoosenFiles(). I need everything but from another dbconnection directory
-        //
-
         ArrayList<Document> files = DBConnection.search(searchBox.getText().toLowerCase() + event.getText().toLowerCase());
         for (Document doc : files) {
             oList.add(doc);
