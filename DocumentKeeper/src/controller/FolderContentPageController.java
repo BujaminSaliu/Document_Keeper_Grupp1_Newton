@@ -27,7 +27,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -43,7 +42,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -186,13 +184,16 @@ public class FolderContentPageController implements Initializable {
                     oList.add(doc);
                     
                     //Here we encrypt original the file  
-                    //creating the encrypted file
+                    //creating a path to the encrypted file
                     File encryptedFile = new File(dir + "/src/savedFiles/" + doc.getName()+ ".encrypted");
                 
                 try {
                     
                     //Call to encryption method file processor whitch uses "AES" algorithm
                     fileProcessor(Cipher.ENCRYPT_MODE,key,source,encryptedFile);
+                    
+                    //Delete the original one
+                    source.delete();
                     
                     //just to check if the encryption done!
                     System.out.println("Encrypted Successfully!");    
@@ -376,19 +377,14 @@ public class FolderContentPageController implements Initializable {
     private void search(KeyEvent event) {
         oList.clear();
         //Method from displayChoosenFiles(). I need everything but from another dbconnection directory
-
         
-//        if(event.getCode()==KeyCode.BACK_SPACE){
-//            //searchBox.deletePreviousChar();
-//            //oList.clear();
-//            System.out.println("deleted chars: " + searchBox.getText());
-//        }
-
         ArrayList<Document> files = DBConnection.search(searchBox.getText().toLowerCase() + event.getText().toLowerCase());
         for (Document doc : files) {
             oList.add(doc);
         }
+        
         gridPane.getChildren().removeAll(gridPane.getChildren());
+        gridPane.getRowConstraints().clear();
         gridPane.add(newFileBox, 0, 0);
         int columnCounter = 1;
         int rowCounter = 0;
@@ -411,16 +407,16 @@ public class FolderContentPageController implements Initializable {
             fileName.setMaxWidth(120);
             if (columnCounter < 4) {
                 gridPane.add(vBox, columnCounter, rowCounter);
-                System.out.println("1111111");
             } else {
-                System.out.println("2222222");
                 rowCounter++;
                 columnCounter = 0;
                 gridPane.add(vBox, columnCounter, rowCounter);
                 RowConstraints row = new RowConstraints();
                 row.setMinHeight(134);
                 gridPane.setPadding(new Insets(5, 0, 0, 0));
-                gridPane.getRowConstraints().add(row);
+                //if(!searchBox.getText().equals("")){
+                  gridPane.getRowConstraints().add(row);  
+                //}
                 scrollPaneStartPage.setContent(gridPane);
             }
             columnCounter++;
