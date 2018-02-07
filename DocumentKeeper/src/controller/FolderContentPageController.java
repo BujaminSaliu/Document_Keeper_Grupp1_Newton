@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -303,9 +305,18 @@ public class FolderContentPageController implements Initializable {
          if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
             if(mouseEvent.getClickCount() == 2){
                 ClassLoader classLoader = getClass().getClassLoader();
+                
                 final String dir = System.getProperty("user.dir");
-                File dest = new File(dir + "/src/savedFiles/" + file.getName() + "." + file.getType());
-                DesktopApi.edit(dest);
+                File encryptedFile = new File(dir + "/src/savedFiles/" + file.getName() + ".encrypted");
+                File decryptedFile = new File(dir + "/src/tempFiles/" + file.getName() + "." + file.getType());
+                
+                try {
+                    fileProcessor(Cipher.DECRYPT_MODE, key, encryptedFile, decryptedFile);
+                } catch (InvalidKeyException ex) {
+                    Logger.getLogger(FolderContentPageController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                DesktopApi.open(decryptedFile);
             }
              linkFiles(file);
              System.out.println(file.getName());
