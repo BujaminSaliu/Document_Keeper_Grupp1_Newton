@@ -9,31 +9,31 @@ and open the template in the editor.
 */
 
 #linkedButton{
-    -fx-background-color:#2cc7c4;
+    -fx-background-color: #fcfe6c;
     -fx-border-width: 1;
     -fx-border-radius:0;
-    -fx-text-fill: white;
+    -fx-text-fill: black;
     -fx-background-radius: 0;
 }
 
 #linkedButton:hover{
     -fx-text-fill:white ;
-    -fx-background-color: #1d8178;
+    -fx-background-color:black;
     -fx-border-width: 1;
     -fx-cursor: hand;
 }
 
 #exportButton{
-    -fx-background-color:#b21773;
+    -fx-background-color: #fcfe6c;
     -fx-border-width: 1;
     -fx-border-radius:0;
-    -fx-text-fill:#fff100;
+    -fx-text-fill:black;
     -fx-background-radius: 0;
 }
 
 #exportButton:hover{
-    -fx-text-fill: #fff100;
-    -fx-background-color:#851156;
+    -fx-text-fill: white;
+    -fx-background-color:black;
     -fx-border-width: 1;
     -fx-cursor: hand;
 }

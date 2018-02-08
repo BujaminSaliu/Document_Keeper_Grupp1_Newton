@@ -31,16 +31,19 @@ and open the template in the editor.
 
 #addFileButton{
     -fx-background-radius: 200;
-    -fx-background-color: #2cc7c4;
+    -fx-background-color:  #fcfe6c;
     -fx-border-radius:200;
+    -fx-border-width: 1;
+    -fx-border-color:black;
 }
 
 
 #addFileButton:hover{
     -fx-background-radius: 200;
-    -fx-background-color: #b21773;
+    -fx-background-color: black;
     -fx-border-radius:200;
     -fx-cursor: hand;
+    -fx-text-fill:white;
 }
 
 #addFileButton:active{
