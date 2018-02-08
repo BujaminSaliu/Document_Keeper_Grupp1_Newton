@@ -82,7 +82,7 @@ public class FolderContentPageController implements Initializable {
     private Button addFileButton, buttonLink;
 
     @FXML
-    private Label infoLabel, fileTypeLabel, fileSizeLabel, fileDateLabel, fileTagLabel,linkedFilesInfoLabel;
+    private Label infoLabel, fileTypeLabel, fileSizeLabel, fileDateLabel, fileTagLabel,linkedFilesInfoLabel, cleanSearchLabel;
 
     List<File> selectedFiles;
     public static List<Document> filesToAdd = new ArrayList<Document>();
@@ -208,7 +208,7 @@ public class FolderContentPageController implements Initializable {
                             fileProcessor(Cipher.ENCRYPT_MODE, key, source, encryptedFile);
 
                             //Delete the original one
-                            source.delete();
+                            //source.delete();
 
                             //just to check if the encryption done!
                             System.out.println("Encrypted Successfully!");
@@ -528,6 +528,23 @@ public class FolderContentPageController implements Initializable {
         scrollPaneStartPage.setContent(gridPane);
 
         displayChosenFiles();
+        cleanSearchLabel.hoverProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean show) -> {
+                            if (show) {
+                                //cleanSearchLabel.setStyle("-fx-background-color:#fffc51; -fx-border-width:3; -fx-border-color: #e2e2e2");
+                                cleanSearchLabel.setTextFill(Color.CADETBLUE);
+                            } else {
+                                //cleanSearchLabel.setStyle("-fx-background-color:#c1c1c1; -fx-border-width:3; -fx-border-color: #e2e2e2");
+                                cleanSearchLabel.setTextFill(Color.BLACK);
+                               
+                            }
+                        });
+                        cleanSearchLabel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent mouseEvent) {
+                                displayChosenFiles();
+                                searchBox.setText("");
+                            }
+                        });
 
     }
 
