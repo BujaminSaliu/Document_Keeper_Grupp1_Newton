@@ -11,17 +11,17 @@ import java.util.List;
 
 /**
  *
- * @author ramonachantaf
+ * @author Grupp 1 & 2 Newton 2018
  */
 public class Folder implements Serializable {
-    
+
     int id;
     String name;
     Date date;
     List<Document> files;
-    
-    public Folder(){
-        
+
+    public Folder() {
+
     }
 
     public Folder(int id, String name, Date date) {
@@ -61,7 +61,5 @@ public class Folder implements Serializable {
     public void setFiles(List<Document> files) {
         this.files = files;
     }
-    
-    
-    
+
 }

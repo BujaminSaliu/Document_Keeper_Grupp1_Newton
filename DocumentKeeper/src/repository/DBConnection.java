@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import models.Document;
@@ -19,7 +18,7 @@ import models.Tag;
 
 /**
  *
- * @author rille
+ * @author Grupp 1 & 2 Newton 2018
  */
 public class DBConnection {
 
@@ -81,11 +80,8 @@ public class DBConnection {
             stmt.close();
              } catch (SQLException sqlExcept) {
             System.out.println("Could not get linked files");
-            
         }  
             return fileList;
-      
-       
     }
 
     public static void insertIntoFiles(String name, double size, String type, String path, List<Tag> tags) throws SQLException {
@@ -224,21 +220,24 @@ public class DBConnection {
             ArrayList<Document> dates = DBConnection.selectFromFiles();
 
             //Adding and removing same object to avoid duplicates
-            for (Document doc : names) {
+            names.stream().map((doc) -> {
                 fileList.removeIf(p -> p.getId() == (doc.getId()));
+                return doc;
+            }).forEachOrdered((doc) -> {
                 fileList.add(doc);
-            }
-            for (Document doc : types) {
+            });
+            types.stream().map((doc) -> {
                 fileList.removeIf(p -> p.getId() == (doc.getId()));
+                return doc;
+            }).forEachOrdered((doc) -> {
                 fileList.add(doc);
-            }
-            for (Document doc : dates) {
-                if (doc.getDate().toString().contains(search)) {
-                    fileList.removeIf(p -> p.getId() == (doc.getId()));
-                    fileList.add(doc);
-                }
-
-            }
+            });
+            dates.stream().filter((doc) -> (doc.getDate().toString().contains(search))).map((doc) -> {
+                fileList.removeIf(p -> p.getId() == (doc.getId()));
+                return doc;
+            }).forEachOrdered((doc) -> {
+                fileList.add(doc);
+            });
 
             return fileList;
 

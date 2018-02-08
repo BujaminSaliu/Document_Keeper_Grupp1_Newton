@@ -7,7 +7,7 @@ package documentkeeper;
 
 /**
  *
- * @author softy
+ * @author Grupp 1 & 2 Newton 2018
  * class found in https://stackoverflow.com/questions/18004150/desktop-api-is-not-supported-on-the-current-platform
  * by MightyPork
  */

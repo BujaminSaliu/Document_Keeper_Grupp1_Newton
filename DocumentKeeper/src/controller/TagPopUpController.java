@@ -8,7 +8,6 @@ package controller;
 import static controller.FolderContentPageController.filesToAdd;
 import static controller.FolderContentPageController.oList;
 import java.io.IOException;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +31,9 @@ import repository.DBConnection;
 /**
  * FXML Controller class
  *
- * @author ramonachantaf
+ * @author Grupp 1 & 2 Newton 2018
  */
+
 public class TagPopUpController implements Initializable {
 
     /**
@@ -41,11 +41,13 @@ public class TagPopUpController implements Initializable {
      */
     
     public static boolean filesAdded = false;
-    
+
     @FXML
     private ListView<Document> fileListView;
+    
     @FXML
     private ListView<Tag> listViewTags;
+    
     @FXML
     private Button importButton;
 
@@ -53,14 +55,11 @@ public class TagPopUpController implements Initializable {
 
     @FXML
     private void addFiles(ActionEvent event) throws IOException {
-
         ObservableList<Document> selectedFiles = fileListView.getItems();
-
         for (Document doc : selectedFiles) {
-
             try {
                 DBConnection.insertIntoFiles(doc.getName(), doc.getSize(), doc.getType(), doc.getPath(), doc.getTags());
-                
+
             } catch (Exception e) {
                 System.out.println(e);
                 Alert alert = new Alert(AlertType.WARNING, "Filerna finns redan lagrade", ButtonType.CANCEL);
@@ -68,18 +67,14 @@ public class TagPopUpController implements Initializable {
                 return;
             }
         }
-        
         filesAdded = true;
-        
         ((Node) (event.getSource())).getScene().getWindow().hide();
     }
 
     @FXML
     private void fileItemClicked(javafx.scene.input.MouseEvent event) throws IOException {
         listViewTags.getSelectionModel().clearSelection();
-
         if (!(fileListView.getSelectionModel().getSelectedIndex() == -1)) {
-
             try {
                 fileListView.getSelectionModel().getSelectedItem().getTags().forEach((tag) -> {
                     listViewTags.getSelectionModel().select(tag);
@@ -87,9 +82,7 @@ public class TagPopUpController implements Initializable {
             } catch (Exception e) {
                 System.out.println(e);
             }
-
         }
-
     }
 
     @FXML
@@ -97,34 +90,29 @@ public class TagPopUpController implements Initializable {
 
         ObservableList<Document> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
         ObservableList<Tag> selectedTags = listViewTags.getSelectionModel().getSelectedItems();
-
+        
         if (!(fileListView.getSelectionModel().getSelectedIndex() == -1)) {
-
             selectedFiles.forEach((doc) -> {
                 List tags = new ArrayList<Tag>();
                 selectedTags.forEach((tag) -> {
                     tags.add(tag);
                 });
-
                 doc.setTags(tags);
             });
-
         }
         fileListView.refresh();
     }
-    
-    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         ArrayList<Tag> tags = DBConnection.selectFromTags();
         obsListForTags = FXCollections.observableArrayList(tags);
         listViewTags.setItems(obsListForTags);
-        
+
         oList.addAll(filesToAdd);
         fileListView.setItems(oList);
         fileListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-         
+
         listViewTags.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         fileListView.scrollTo(0);
         fileListView.getSelectionModel().select(0);
