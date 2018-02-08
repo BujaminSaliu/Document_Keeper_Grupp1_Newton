@@ -7,11 +7,11 @@ package controller;
 
 import static controller.TagPopUpController.filesAdded;
 import documentkeeper.DesktopApi;
-import java.awt.Component;
-import java.io.IOException;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -19,6 +19,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -29,7 +30,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -95,13 +95,13 @@ public class FolderContentPageController implements Initializable {
     @FXML
     private VBox newFileBox;
     @FXML
-    private HBox nameHBox;
-
+    private HBox nameHBox,hBoxButtons;
+   
     @FXML
     private ScrollPane scrollPaneStartPage;
 
     @FXML
-    private Button exportButton, linkedButton;
+    private Button exportButton, linkedButton,createFileButton;
 
     @FXML
     private TextField searchBox;
@@ -509,6 +509,45 @@ public class FolderContentPageController implements Initializable {
         }
     }
 
+        @FXML
+    private void createFileButtonAction(ActionEvent event) throws IOException {
+        
+        final Formatter x;
+        
+        
+        try{
+            x = new Formatter("text.txt");
+            System.out.println("file created");
+            
+            ProcessBuilder pb = new ProcessBuilder("Notepad.exe", "text.txt");
+            pb.start();
+            
+            //windowClosed(pb);
+            
+        }catch(FileNotFoundException e){
+            System.out.println("Error, alas!!");
+        }
+        
+    }
+    
+//        public void windowClosed(ProcessBuilder pb) {
+//        File encryptedFile = new File(dir + "/src/savedFiles/" + doc.getName()+ ".encrypted"); //copypaste "doc.getName" ska bytas ut
+// try {
+//                    
+//                    //Call to encryption method file processor whitch uses "AES" algorithm
+//                    fileProcessor(Cipher.ENCRYPT_MODE,key,source,encryptedFile);  //"source" ska bytas ut mot path till filen
+//                    
+//                    //Delete the original one
+//                    source.delete();
+//                    
+//                    //just to check if the encryption done!
+//                    System.out.println("Encrypted Successfully!");    
+//                } 
+//                catch (Exception ex) {
+//                    System.out.println(ex.getMessage());
+//                }
+//    }
+        
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
