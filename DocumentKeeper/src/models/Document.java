@@ -5,7 +5,6 @@
  */
 package models;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,9 +12,10 @@ import java.util.List;
 
 /**
  *
- * @author ramonachantaf
+ * @author Grupp 1 & 2 Newton 2018
  */
 public class Document implements Serializable {
+
     int id;
     String name;
     Date date;
@@ -23,13 +23,11 @@ public class Document implements Serializable {
     int size;
     String path;
     List<Tag> tags;
-   
-    
-    public Document(){
-        
+
+    public Document() {
     }
 
-    public Document(int id, String name,Date date, String type,int size, String path) {
+    public Document(int id, String name, Date date, String type, int size, String path) {
         this.id = id;
         this.name = name;
         this.date = date;
@@ -47,7 +45,6 @@ public class Document implements Serializable {
         this.id = id;
     }
 
-    
     public String getName() {
         return name;
     }
@@ -55,7 +52,6 @@ public class Document implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
 
     public String getType() {
         return type;
@@ -97,21 +93,18 @@ public class Document implements Serializable {
         this.date = date;
     }
 
- 
-    
-    
     @Override
-     public String toString(){ // metod för att skriva ut Document
-       if(tags != null){
-           if(tags.isEmpty()){
-               return this.getName() +"."+ this.getType(); 
-           } else {
-               return "\u2713\t"+ this.getName() +"."+this.getType();
-           }
-       }else{
-             return this.getName()+"."+this.getType();
-       }
-         // returnerar Stringen name
+    public String toString() { // metod för att skriva ut Document
+        if (tags != null) {
+            if (tags.isEmpty()) {
+                return this.getName() + "." + this.getType();
+            } else {
+                return "\u2713\t" + this.getName() + "." + this.getType();
+            }
+        } else {
+            return this.getName() + "." + this.getType();
+        }
+        // returnerar Stringen name
     }
-    
+
 }

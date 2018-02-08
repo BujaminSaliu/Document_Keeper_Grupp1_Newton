@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  *
- * @author ramonachantaf
+ * @author Grupp 1 & 2 Newton 2018
  */
 public class Tag implements Serializable {
     

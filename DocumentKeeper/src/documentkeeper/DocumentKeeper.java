@@ -6,11 +6,7 @@
 package documentkeeper;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,44 +19,38 @@ import repository.DBConnection;
 
 /**
  *
- * @author ramonachantaf
+ * @author Grupp 1 & 2 Newton 2018
  */
+
 public class DocumentKeeper extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        //Parent root = FXMLLoader.load(getClass().getResource("/fxml/StartupPage.fxml"));
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/FolderContentPage.fxml"));
-
         Scene scene = new Scene(root);
-
+        stage.setTitle("Document Keeper Grupp 1 & 2 Newton 2018");
         stage.setScene(scene);
         stage.show();
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            public void handle(WindowEvent we) {
+        stage.setOnCloseRequest((WindowEvent we) -> {
+            final String dir = System.getProperty("user.dir");
+            
+            File directory = new File(dir + "/src/tempFiles");
+            
+            // Get all files in directory
+            File[] files = directory.listFiles();
+            
+            for (File file : files) {
                 
-                final String dir = System.getProperty("user.dir");
-
-                File directory = new File(dir + "/src/tempFiles");
-
-                // Get all files in directory
-                File[] files = directory.listFiles();
-
-                for (File file : files) {
-
-                    // Delete each file
-                    if (!file.delete()) {
-                        we.consume();
-                        Alert alert = new Alert(AlertType.WARNING, 
-                        "Vänligen stäng alla öppna filer innan programmet avlutas.",
-                        ButtonType.OK);
-                        alert.showAndWait();
-                        // Failed to delete file
-                        System.out.println("Failed to delete " + file);
-
-                    }
-
-                }
+                // Delete each file
+                if (!file.delete()) {
+                    we.consume();
+                    Alert alert = new Alert(AlertType.WARNING,
+                            "Vänligen stäng alla öppna filer innan programmet avlutas.",
+                            ButtonType.OK);
+                    alert.showAndWait();
+                    // Failed to delete file
+                    System.out.println("Failed to delete " + file);                    
+                }                
             }
         });
     }
@@ -74,5 +64,4 @@ public class DocumentKeeper extends Application {
 
         launch(args);
     }
-
 }

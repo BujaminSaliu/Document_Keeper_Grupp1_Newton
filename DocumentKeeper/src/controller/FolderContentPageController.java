@@ -7,7 +7,6 @@ package controller;
 
 import static controller.TagPopUpController.filesAdded;
 import documentkeeper.DesktopApi;
-import java.awt.Component;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +28,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -74,26 +72,23 @@ import repository.DBConnection;
 /**
  * FXML Controller class
  *
- * @author louiseahokas
+ * @author Grupp 1 & 2 Newton 2018
  */
+
 public class FolderContentPageController implements Initializable {
 
     @FXML
     private Button addFileButton, buttonLink;
 
     @FXML
-    private Label infoLabel, fileTypeLabel, fileSizeLabel, fileDateLabel, fileTagLabel,linkedFilesInfoLabel;
-
-    List<File> selectedFiles;
-    public static List<Document> filesToAdd = new ArrayList<Document>();
-
-    private GridPane gridPane;
+    private Label infoFileTransferLabel, fileTypeLabel, fileSizeLabel, fileDateLabel, fileTagLabel, linkedFilesInfoLabel;
 
     @FXML
     private GridPane tagBox;
 
     @FXML
     private VBox newFileBox;
+    
     @FXML
     private HBox nameHBox;
 
@@ -105,51 +100,36 @@ public class FolderContentPageController implements Initializable {
 
     @FXML
     private TextField searchBox;
+    
     @FXML
     private Label nameLabel, typeLabel, sizeLabel, dateLabel, tagLabel;
+    
     @FXML
     private ListView<String> listToLink;
 
     public static ObservableList<Document> oList = FXCollections.observableArrayList();
     public static ObservableList<String> linkedFilesObs = FXCollections.observableArrayList();
-
-    private String name = null;
-    private String type = null;
-
-    String key = "This is a secret";
-
+    public static List<Document> filesToAdd = new ArrayList<Document>();
     private ArrayList<VBox> selectedBoxes = new ArrayList<VBox>();
     private ArrayList<Document> filesToLink = new ArrayList<>();
-
-    @FXML
-    private void linkFiles(Document fileA) {
-        ArrayList<Document> files = DBConnection.selectFromFiles();
-        oList = FXCollections.observableArrayList(files);
-        //listToLink.setItems(oList);
-        buttonLink.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                pushTheButton(fileA);
-            }
-        });
-    }
-
-    @FXML
-    private void pushTheButton(Document fileA) {
-        // int fileB = listToLink.getSelectionModel().getSelectedItem().getId();
-        // System.out.println(" fileA.id " + fileA.getId() + " fileB.id " + fileB);
-        // DBConnection.linkFiles(fileA.getId(), fileB);
-    }
+    List<File> selectedFiles;
+    
+    private String name = null;
+    private String type = null;
+    
+    private GridPane gridPane;
+    
+    String key = "This is a secret";
 
     @FXML
     private void addFileButtonAction(ActionEvent event) throws IOException {
         filesAdded = false;
         oList.clear();
         filesToAdd.clear();
-        infoLabel.setText("");
+        
 
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choose your files");
+        fileChooser.setTitle("Välj en eller flera filer");
         selectedFiles = fileChooser.showOpenMultipleDialog(null);
         fileChooser.getExtensionFilters().addAll();
 
@@ -174,64 +154,68 @@ public class FolderContentPageController implements Initializable {
                 files.setTags(tags);
 
                 filesToAdd.add(files);
-
             }
         } catch (Exception e) {
             System.out.println(e);
-            infoLabel.setText("Åtgärden avbröts!");
+            infoFileTransferLabel.setText("Åtgärden avbröts!");
         }
         if (selectedFiles != null) {
             addTag();
         }
 
         if (filesAdded) {
-            infoLabel.setText("Filer läggs till..vänligen vänta...");
             Task<Void> longRunningTask = new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
-                    for (Document doc : filesToAdd) {
-
+                    filesToAdd.stream().map((doc) -> {
                         ClassLoader classLoader = getClass().getClassLoader();
                         final String dir = System.getProperty("user.dir");
-
                         File source = new File(doc.getPath());
                         File dest = new File(dir + "/src/savedFiles/" + doc.getName() + "." + doc.getType());
-
                         oList.add(doc);
                         //Here we encrypt original the file  
                         //creating a path to the encrypted file
                         File encryptedFile = new File(dir + "/src/savedFiles/" + doc.getName() + ".encrypted");
-
                         try {
-
                             //Call to encryption method file processor whitch uses "AES" algorithm
                             fileProcessor(Cipher.ENCRYPT_MODE, key, source, encryptedFile);
 
-                            //Delete the original one
-                            source.delete();
-
                             //just to check if the encryption done!
                             System.out.println("Encrypted Successfully!");
+
                         } catch (Exception ex) {
                             System.out.println(ex.getMessage());
                         }
                         oList.add(doc);
-
+                        return doc;
+                    }).forEachOrdered((_item) -> {
                         if (filesToAdd.size() == 1) {
-                            Platform.runLater(() -> infoLabel.setText("Filen lades till!"));
-
+                            Platform.runLater(() -> infoFileTransferLabel.setText("Filen lades till!"));
+                            try {
+                                Thread.sleep(1000);
+                                infoFileTransferLabel.setText("Filen lades till!");
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(FolderContentPageController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         } else {
-                            Platform.runLater(() -> infoLabel.setText("Filerna lades till!"));
+                            Platform.runLater(() -> infoFileTransferLabel.setText("Filerna lades till!"));
+                            try {
+                                Thread.sleep(1000);
+                                infoFileTransferLabel.setText("Filerna lades till!");
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(FolderContentPageController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
-
-                    }
+                    });
+                    
                     Platform.runLater(() -> displayChosenFiles());
                     return null;
+                    
                 }
+                
             };
-            infoLabel.setText("Filer läggs till..vänligen vänta...");
+            infoFileTransferLabel.setText("Filer läggs till..vänligen vänta...");
             new Thread(longRunningTask).start();
-
         }
     }
 
@@ -275,7 +259,7 @@ public class FolderContentPageController implements Initializable {
     }
 
     private void displayChosenFiles() {
-
+        infoFileTransferLabel.setText("");
         gridPane.getChildren().removeAll(gridPane.getChildren());
         gridPane.add(newFileBox, 0, 0);
         int columnCounter = 1;
@@ -319,9 +303,9 @@ public class FolderContentPageController implements Initializable {
             linkedFilesObs.clear();
             if (!mouseEvent.isControlDown()) {
                 filesToLink.clear();
-                for (VBox vbox : selectedBoxes) {
+                selectedBoxes.forEach((vbox) -> {
                     vbox.setStyle("fx-background-color: none");
-                }
+                });
                 selectedBoxes.clear();
                 box.setStyle("-fx-background-color: #e2e2e2");
                 selectedBoxes.add(box);
@@ -361,16 +345,13 @@ public class FolderContentPageController implements Initializable {
                     }
 
                     DesktopApi.open(decryptedFile);
-
                 }
-                //linkFiles(file);
-
                 nameLabel.setText(filesToLink.get(0).getName());
                 nameLabel.setWrapText(true);
                 typeLabel.setText(filesToLink.get(0).getType() + " " + "fil");
                 if (filesToLink.get(0).getSize() > 1000000) {
                     int fileSize = (filesToLink.get(0).getSize() / 1000) / 1000;
-                    //double roundedFileSize = Math.round(fileSize*100.0)/100.0;
+                    
                     sizeLabel.setText(String.valueOf(fileSize) + " MB");
                 } else {
                     sizeLabel.setText(String.valueOf(filesToLink.get(0).getSize() / 1000) + " KB");
@@ -389,7 +370,7 @@ public class FolderContentPageController implements Initializable {
                         newLabel.setCursor(Cursor.HAND);
                         newLabel.setFont(Font.font("Arial", 12));
                         newLabel.setMinHeight(25);
-                         newLabel.setStyle("-fx-background-color:#c1c1c1; -fx-border-width:3; -fx-border-color: #e2e2e2");
+                        newLabel.setStyle("-fx-background-color:#c1c1c1; -fx-border-width:3; -fx-border-color: #e2e2e2");
                         newLabel.hoverProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean show) -> {
                             if (show) {
                                 newLabel.setStyle("-fx-background-color:#fffc51; -fx-border-width:3; -fx-border-color: #e2e2e2");
@@ -397,7 +378,6 @@ public class FolderContentPageController implements Initializable {
                             } else {
                                 newLabel.setStyle("-fx-background-color:#c1c1c1; -fx-border-width:3; -fx-border-color: #e2e2e2");
                                 newLabel.setTextFill(Color.BLACK);
-                               
                             }
                         });
                         newLabel.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -422,20 +402,13 @@ public class FolderContentPageController implements Initializable {
                         }
                         columnCounter++;
                     }
-
-                    //fileTagLabel.setVisible(true);
-                    //tagLabel.setText("" + file.getTags());
                 } else {
                     fileTagLabel.setVisible(false);
                     tagLabel.setText("");
                 }
-
                 saveFileInfo(filesToLink.get(0).getName(), filesToLink.get(0).getType());
-
             }
-
         });
-
     }
 
     @FXML
@@ -455,7 +428,6 @@ public class FolderContentPageController implements Initializable {
             stage.close();
         });
         stage.showAndWait(); // öppnar popUp
-
     }
 
     @FXML
@@ -470,7 +442,6 @@ public class FolderContentPageController implements Initializable {
         for (Document doc : files) {
             oList.add(doc);
         }
-
         gridPane.getChildren().removeAll(gridPane.getChildren());
         gridPane.getRowConstraints().clear();
         gridPane.add(newFileBox, 0, 0);
@@ -528,7 +499,6 @@ public class FolderContentPageController implements Initializable {
         scrollPaneStartPage.setContent(gridPane);
 
         displayChosenFiles();
-
     }
 
     static void fileProcessor(int cipherMode, String key, File inputFile, File outputFile) throws InvalidKeyException {
@@ -558,12 +528,8 @@ public class FolderContentPageController implements Initializable {
 
     private void updateLinkedFilesList(int a) {
         ArrayList<Document> files = DBConnection.getLinkedFiles(a);
-        for (Document doc : files) {
-            if (doc.getId() != filesToLink.get(0).getId()) {
-                linkedFilesObs.add(doc.getName());
-            }
-
-        }
-        //linkedFilesObs.addAll(files);
+        files.stream().filter((doc) -> (doc.getId() != filesToLink.get(0).getId())).forEachOrdered((doc) -> {
+            linkedFilesObs.add(doc.getName());
+        }); 
     }
 }

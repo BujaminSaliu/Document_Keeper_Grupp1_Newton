@@ -63,7 +63,7 @@
          <bottom>
             <HBox alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="767.0" style="-fx-background-color: #fcfe6c;" styleClass="back" BorderPane.alignment="BOTTOM_LEFT">
                <children>
-                  <Label fx:id="infoLabel" prefHeight="24.0" prefWidth="748.0">
+                  <Label fx:id="infoFileTransferLabel" prefHeight="24.0" prefWidth="748.0">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
