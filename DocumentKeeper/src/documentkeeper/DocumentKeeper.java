@@ -7,6 +7,7 @@ package documentkeeper;
 
 import java.io.File;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -31,28 +32,6 @@ public class DocumentKeeper extends Application {
         stage.setTitle("Document Keeper Grupp 1 & 2 Newton 2018");
         stage.setScene(scene);
         stage.show();
-<<<<<<< HEAD
-        stage.setOnCloseRequest((WindowEvent we) -> {
-            final String dir = System.getProperty("user.dir");
-            
-            File directory = new File(dir + "/src/tempFiles");
-            
-            // Get all files in directory
-            File[] files = directory.listFiles();
-            
-            for (File file : files) {
-                
-                // Delete each file
-                if (!file.delete()) {
-                    we.consume();
-                    Alert alert = new Alert(AlertType.WARNING,
-                            "Vänligen stäng alla öppna filer innan programmet avlutas.",
-                            ButtonType.OK);
-                    alert.showAndWait();
-                    // Failed to delete file
-                    System.out.println("Failed to delete " + file);                    
-                }                
-=======
         final String dir = System.getProperty("user.dir");
 
         File tempFilesDirectory = new File(dir + "/src/tempFiles");
@@ -109,7 +88,7 @@ public class DocumentKeeper extends Application {
                     }
 
                 }
->>>>>>> 3a9399d38d9c2f8ea3a7ee3855a7ad49bc41a891
+
             }
         });
     }

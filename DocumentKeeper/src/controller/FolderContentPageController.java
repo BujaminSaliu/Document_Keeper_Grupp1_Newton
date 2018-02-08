@@ -7,10 +7,6 @@ package controller;
 
 import static controller.TagPopUpController.filesAdded;
 import documentkeeper.DesktopApi;
-<<<<<<< HEAD
-import java.io.IOException;
-=======
->>>>>>> 3a9399d38d9c2f8ea3a7ee3855a7ad49bc41a891
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -87,16 +83,9 @@ public class FolderContentPageController implements Initializable {
     private Button addFileButton, buttonLink;
 
     @FXML
-<<<<<<< HEAD
-    private Label infoFileTransferLabel, fileTypeLabel, fileSizeLabel, fileDateLabel, fileTagLabel, linkedFilesInfoLabel;
-=======
-    private Label infoLabel, fileTypeLabel, fileSizeLabel, fileDateLabel, fileTagLabel,linkedFilesInfoLabel, cleanSearchLabel;
+    private Label infoFileTransferLabel, fileTypeLabel, fileSizeLabel, fileDateLabel, fileTagLabel, linkedFilesInfoLabel, cleanSearchLabel;
 
-    List<File> selectedFiles;
-    public static List<Document> filesToAdd = new ArrayList<Document>();
 
-    private GridPane gridPane;
->>>>>>> 3a9399d38d9c2f8ea3a7ee3855a7ad49bc41a891
 
     @FXML
     private GridPane tagBox;
@@ -195,12 +184,6 @@ public class FolderContentPageController implements Initializable {
                             //Call to encryption method file processor whitch uses "AES" algorithm
                             fileProcessor(Cipher.ENCRYPT_MODE, key, source, encryptedFile);
 
-<<<<<<< HEAD
-=======
-                            //Delete the original one
-                            //source.delete();
-
->>>>>>> 3a9399d38d9c2f8ea3a7ee3855a7ad49bc41a891
                             //just to check if the encryption done!
                             System.out.println("Encrypted Successfully!");
 
@@ -559,8 +542,7 @@ public class FolderContentPageController implements Initializable {
         scrollPaneStartPage.setContent(gridPane);
 
         displayChosenFiles();
-<<<<<<< HEAD
-=======
+
         cleanSearchLabel.hoverProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean show) -> {
                             if (show) {
                                 //cleanSearchLabel.setStyle("-fx-background-color:#fffc51; -fx-border-width:3; -fx-border-color: #e2e2e2");
@@ -579,7 +561,7 @@ public class FolderContentPageController implements Initializable {
                             }
                         });
 
->>>>>>> 3a9399d38d9c2f8ea3a7ee3855a7ad49bc41a891
+
     }
 
     static void fileProcessor(int cipherMode, String key, File inputFile, File outputFile) throws InvalidKeyException {
