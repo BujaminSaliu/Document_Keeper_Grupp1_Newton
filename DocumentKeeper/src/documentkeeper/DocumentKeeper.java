@@ -31,6 +31,7 @@ public class DocumentKeeper extends Application {
         stage.setTitle("Document Keeper Grupp 1 & 2 Newton 2018");
         stage.setScene(scene);
         stage.show();
+<<<<<<< HEAD
         stage.setOnCloseRequest((WindowEvent we) -> {
             final String dir = System.getProperty("user.dir");
             
@@ -51,6 +52,48 @@ public class DocumentKeeper extends Application {
                     // Failed to delete file
                     System.out.println("Failed to delete " + file);                    
                 }                
+=======
+        final String dir = System.getProperty("user.dir");
+
+        File directory = new File(dir + "/src/tempFiles");
+        // check if DIR exists else make it
+        if (!directory.exists()) {
+            System.out.println("Creating tempFiles dir");
+            boolean result = false;
+            try {
+                directory.mkdir();
+                result = true;
+
+            } catch (SecurityException se) {
+                System.out.println("Dircreate fail" + se);
+            }
+            if (result) {
+                System.out.println("Directory created!");
+            }
+        }
+
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            public void handle(WindowEvent we) {
+
+                // Get all files in directory
+                File[] files = directory.listFiles();
+
+                for (File file : files) {
+
+                    // Delete each file
+                    if (!file.delete()) {
+                        we.consume();
+                        Alert alert = new Alert(AlertType.WARNING,
+                                "Vänligen stäng alla öppna filer innan programmet avlutas.",
+                                ButtonType.OK);
+                        alert.showAndWait();
+                        // Failed to delete file
+                        System.out.println("Failed to delete " + file);
+
+                    }
+
+                }
+>>>>>>> 3a9399d38d9c2f8ea3a7ee3855a7ad49bc41a891
             }
         });
     }

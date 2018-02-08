@@ -7,10 +7,15 @@ package controller;
 
 import static controller.TagPopUpController.filesAdded;
 import documentkeeper.DesktopApi;
+<<<<<<< HEAD
 import java.io.IOException;
+=======
+>>>>>>> 3a9399d38d9c2f8ea3a7ee3855a7ad49bc41a891
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -18,6 +23,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -81,7 +87,16 @@ public class FolderContentPageController implements Initializable {
     private Button addFileButton, buttonLink;
 
     @FXML
+<<<<<<< HEAD
     private Label infoFileTransferLabel, fileTypeLabel, fileSizeLabel, fileDateLabel, fileTagLabel, linkedFilesInfoLabel;
+=======
+    private Label infoLabel, fileTypeLabel, fileSizeLabel, fileDateLabel, fileTagLabel,linkedFilesInfoLabel, cleanSearchLabel;
+
+    List<File> selectedFiles;
+    public static List<Document> filesToAdd = new ArrayList<Document>();
+
+    private GridPane gridPane;
+>>>>>>> 3a9399d38d9c2f8ea3a7ee3855a7ad49bc41a891
 
     @FXML
     private GridPane tagBox;
@@ -90,13 +105,13 @@ public class FolderContentPageController implements Initializable {
     private VBox newFileBox;
     
     @FXML
-    private HBox nameHBox;
-
+    private HBox nameHBox,hBoxButtons;
+   
     @FXML
     private ScrollPane scrollPaneStartPage;
 
     @FXML
-    private Button exportButton, linkedButton;
+    private Button exportButton, linkedButton,createFileButton;
 
     @FXML
     private TextField searchBox;
@@ -180,6 +195,12 @@ public class FolderContentPageController implements Initializable {
                             //Call to encryption method file processor whitch uses "AES" algorithm
                             fileProcessor(Cipher.ENCRYPT_MODE, key, source, encryptedFile);
 
+<<<<<<< HEAD
+=======
+                            //Delete the original one
+                            //source.delete();
+
+>>>>>>> 3a9399d38d9c2f8ea3a7ee3855a7ad49bc41a891
                             //just to check if the encryption done!
                             System.out.println("Encrypted Successfully!");
 
@@ -480,6 +501,45 @@ public class FolderContentPageController implements Initializable {
         }
     }
 
+        @FXML
+    private void createFileButtonAction(ActionEvent event) throws IOException {
+        
+        final Formatter x;
+        
+        
+        try{
+            x = new Formatter("text.txt");
+            System.out.println("file created");
+            
+            ProcessBuilder pb = new ProcessBuilder("Notepad.exe", "text.txt");
+            pb.start();
+            
+            //windowClosed(pb);
+            
+        }catch(FileNotFoundException e){
+            System.out.println("Error, alas!!");
+        }
+        
+    }
+    
+//        public void windowClosed(ProcessBuilder pb) {
+//        File encryptedFile = new File(dir + "/src/savedFiles/" + doc.getName()+ ".encrypted"); //copypaste "doc.getName" ska bytas ut
+// try {
+//                    
+//                    //Call to encryption method file processor whitch uses "AES" algorithm
+//                    fileProcessor(Cipher.ENCRYPT_MODE,key,source,encryptedFile);  //"source" ska bytas ut mot path till filen
+//                    
+//                    //Delete the original one
+//                    source.delete();
+//                    
+//                    //just to check if the encryption done!
+//                    System.out.println("Encrypted Successfully!");    
+//                } 
+//                catch (Exception ex) {
+//                    System.out.println(ex.getMessage());
+//                }
+//    }
+        
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
@@ -499,6 +559,27 @@ public class FolderContentPageController implements Initializable {
         scrollPaneStartPage.setContent(gridPane);
 
         displayChosenFiles();
+<<<<<<< HEAD
+=======
+        cleanSearchLabel.hoverProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean show) -> {
+                            if (show) {
+                                //cleanSearchLabel.setStyle("-fx-background-color:#fffc51; -fx-border-width:3; -fx-border-color: #e2e2e2");
+                                cleanSearchLabel.setTextFill(Color.CADETBLUE);
+                            } else {
+                                //cleanSearchLabel.setStyle("-fx-background-color:#c1c1c1; -fx-border-width:3; -fx-border-color: #e2e2e2");
+                                cleanSearchLabel.setTextFill(Color.BLACK);
+                               
+                            }
+                        });
+                        cleanSearchLabel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent mouseEvent) {
+                                displayChosenFiles();
+                                searchBox.setText("");
+                            }
+                        });
+
+>>>>>>> 3a9399d38d9c2f8ea3a7ee3855a7ad49bc41a891
     }
 
     static void fileProcessor(int cipherMode, String key, File inputFile, File outputFile) throws InvalidKeyException {
