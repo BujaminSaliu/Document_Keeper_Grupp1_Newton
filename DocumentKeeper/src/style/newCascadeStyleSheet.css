@@ -31,18 +31,14 @@ and open the template in the editor.
 
 #addFileButton{
     -fx-background-radius: 200;
-    -fx-background-color: none;
-    -fx-border-width: 1;
-    -fx-border-color:black;
+    -fx-background-color: #2cc7c4;
     -fx-border-radius:200;
 }
 
 
 #addFileButton:hover{
     -fx-background-radius: 200;
-    -fx-background-color:  #fcfe6c;
-    -fx-border-width: 1;
-    -fx-border-color:black;
+    -fx-background-color: #b21773;
     -fx-border-radius:200;
     -fx-cursor: hand;
 }
@@ -67,36 +63,6 @@ and open the template in the editor.
 #importButton:active{
   -fx-border-color:#fcfe6c;
   -fx-text-fill:#fcfe6c;
-}
-
-#linkedButton{
-    -fx-background-color:linear-gradient( #636261, black);
-    -fx-border-width: 1;
-    -fx-border-radius:0;
-    -fx-text-fill: white;
-    -fx-background-radius: 0;
-}
-
-#linkedButton:hover{
-    -fx-text-fill: white;
-    -fx-background-color: black;
-    -fx-border-width: 1;
-    -fx-cursor: hand;
-}
-
-#exportButton{
-    -fx-background-color:linear-gradient(#636261, black);
-    -fx-border-width: 1;
-    -fx-border-radius:0;
-    -fx-text-fill: white;
-    -fx-background-radius: 0;
-}
-
-#exportButton:hover{
-    -fx-text-fill: white;
-    -fx-background-color:black;
-    -fx-border-width: 1;
-    -fx-cursor: hand;
 }
 
 #fileSizeLabel{

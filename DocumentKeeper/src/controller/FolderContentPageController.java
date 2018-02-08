@@ -82,7 +82,7 @@ public class FolderContentPageController implements Initializable {
     private Button addFileButton, buttonLink;
 
     @FXML
-    private Label infoLabel, fileTypeLabel, fileSizeLabel, fileDateLabel, fileTagLabel;
+    private Label infoLabel, fileTypeLabel, fileSizeLabel, fileDateLabel, fileTagLabel,linkedFilesInfoLabel;
 
     List<File> selectedFiles;
     public static List<Document> filesToAdd = new ArrayList<Document>();
@@ -94,6 +94,8 @@ public class FolderContentPageController implements Initializable {
 
     @FXML
     private VBox newFileBox;
+    @FXML
+    private HBox nameHBox;
 
     @FXML
     private ScrollPane scrollPaneStartPage;
@@ -338,10 +340,12 @@ public class FolderContentPageController implements Initializable {
             fileTypeLabel.setVisible(true);
             fileSizeLabel.setVisible(true);
             fileDateLabel.setVisible(true);
-
+            linkedFilesInfoLabel.setVisible(true);
             exportButton.setVisible(true);
-
+            listToLink.setVisible(true);
             linkedButton.setVisible(true);
+            fileTagLabel.setVisible(true);
+            nameHBox.setVisible(true);
             if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                 if (mouseEvent.getClickCount() == 2) {
                     ClassLoader classLoader = getClass().getClassLoader();
@@ -384,11 +388,16 @@ public class FolderContentPageController implements Initializable {
                         newLabel.setText(tag.toString());
                         newLabel.setCursor(Cursor.HAND);
                         newLabel.setFont(Font.font("Arial", 12));
+                        newLabel.setMinHeight(25);
+                         newLabel.setStyle("-fx-background-color:#c1c1c1; -fx-border-width:3; -fx-border-color: #e2e2e2");
                         newLabel.hoverProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean show) -> {
                             if (show) {
+                                newLabel.setStyle("-fx-background-color:#fffc51; -fx-border-width:3; -fx-border-color: #e2e2e2");
                                 newLabel.setTextFill(Color.CORNFLOWERBLUE);
                             } else {
+                                newLabel.setStyle("-fx-background-color:#c1c1c1; -fx-border-width:3; -fx-border-color: #e2e2e2");
                                 newLabel.setTextFill(Color.BLACK);
+                               
                             }
                         });
                         newLabel.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -401,14 +410,14 @@ public class FolderContentPageController implements Initializable {
                             }
                         });
 
-                        if (columnCounter < 3) {
+                        if (columnCounter < 2) {
                             tagBox.add(newLabel, columnCounter, rowCounter);
                         } else {
                             rowCounter++;
                             columnCounter = 0;
                             tagBox.add(newLabel, columnCounter, rowCounter);
                             RowConstraints row = new RowConstraints();
-                            row.setMinHeight(10);
+                            row.setMinHeight(15);
                             tagBox.getRowConstraints().add(row);
                         }
                         columnCounter++;
