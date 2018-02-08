@@ -38,13 +38,29 @@ public class DocumentKeeper extends Application {
         stage.show();
         final String dir = System.getProperty("user.dir");
 
-        File directory = new File(dir + "/src/tempFiles");
+        File tempFilesDirectory = new File(dir + "/src/tempFiles");
+        File savedFilesDirectory = new File(dir + "/src/savedFiles");
         // check if DIR exists else make it
-        if (!directory.exists()) {
+        if (!tempFilesDirectory.exists()) {
             System.out.println("Creating tempFiles dir");
             boolean result = false;
             try {
-                directory.mkdir();
+                tempFilesDirectory.mkdir();
+                result = true;
+
+            } catch (SecurityException se) {
+                System.out.println("Dircreate fail" + se);
+            }
+            if (result) {
+                System.out.println("Directory created!");
+            }
+        }
+        
+        if (!savedFilesDirectory.exists()) {
+            System.out.println("Creating savedFiles dir");
+            boolean result = false;
+            try {
+                savedFilesDirectory.mkdir();
                 result = true;
 
             } catch (SecurityException se) {
@@ -59,7 +75,7 @@ public class DocumentKeeper extends Application {
             public void handle(WindowEvent we) {
 
                 // Get all files in directory
-                File[] files = directory.listFiles();
+                File[] files = tempFilesDirectory.listFiles();
 
                 for (File file : files) {
 
