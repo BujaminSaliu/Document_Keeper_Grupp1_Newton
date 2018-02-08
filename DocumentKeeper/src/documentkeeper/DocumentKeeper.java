@@ -36,12 +36,27 @@ public class DocumentKeeper extends Application {
 
         stage.setScene(scene);
         stage.show();
+        final String dir = System.getProperty("user.dir");
+
+        File directory = new File(dir + "/src/tempFiles");
+        // check if DIR exists else make it
+        if (!directory.exists()) {
+            System.out.println("Creating tempFiles dir");
+            boolean result = false;
+            try {
+                directory.mkdir();
+                result = true;
+
+            } catch (SecurityException se) {
+                System.out.println("Dircreate fail" + se);
+            }
+            if (result) {
+                System.out.println("Directory created!");
+            }
+        }
+
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             public void handle(WindowEvent we) {
-                
-                final String dir = System.getProperty("user.dir");
-
-                File directory = new File(dir + "/src/tempFiles");
 
                 // Get all files in directory
                 File[] files = directory.listFiles();
@@ -51,9 +66,9 @@ public class DocumentKeeper extends Application {
                     // Delete each file
                     if (!file.delete()) {
                         we.consume();
-                        Alert alert = new Alert(AlertType.WARNING, 
-                        "Vänligen stäng alla öppna filer innan programmet avlutas.",
-                        ButtonType.OK);
+                        Alert alert = new Alert(AlertType.WARNING,
+                                "Vänligen stäng alla öppna filer innan programmet avlutas.",
+                                ButtonType.OK);
                         alert.showAndWait();
                         // Failed to delete file
                         System.out.println("Failed to delete " + file);
