@@ -37,6 +37,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -76,7 +77,6 @@ import repository.DBConnection;
  *
  * @author Grupp 1 & 2 Newton 2018
  */
-
 public class FolderContentPageController implements Initializable {
 
     @FXML
@@ -85,29 +85,27 @@ public class FolderContentPageController implements Initializable {
     @FXML
     private Label infoFileTransferLabel, fileTypeLabel, fileSizeLabel, fileDateLabel, fileTagLabel, linkedFilesInfoLabel, cleanSearchLabel;
 
-
-
     @FXML
     private GridPane tagBox;
 
     @FXML
     private VBox newFileBox;
-    
+
     @FXML
-    private HBox nameHBox,hBoxButtons;
-   
+    private HBox nameHBox, hBoxButtons;
+
     @FXML
     private ScrollPane scrollPaneStartPage;
 
     @FXML
-    private Button exportButton, linkedButton,createFileButton;
+    private Button exportButton, linkedButton, createFileButton;
 
     @FXML
     private TextField searchBox;
-    
+
     @FXML
     private Label nameLabel, typeLabel, sizeLabel, dateLabel, tagLabel;
-    
+
     @FXML
     private ListView<String> listToLink;
 
@@ -117,12 +115,12 @@ public class FolderContentPageController implements Initializable {
     private ArrayList<VBox> selectedBoxes = new ArrayList<VBox>();
     private ArrayList<Document> filesToLink = new ArrayList<>();
     List<File> selectedFiles;
-    
+
     private String name = null;
     private String type = null;
-    
+
     private GridPane gridPane;
-    
+
     String key = "This is a secret";
 
     @FXML
@@ -130,7 +128,6 @@ public class FolderContentPageController implements Initializable {
         filesAdded = false;
         oList.clear();
         filesToAdd.clear();
-        
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Välj en eller flera filer");
@@ -211,12 +208,12 @@ public class FolderContentPageController implements Initializable {
                             }
                         }
                     });
-                    
+
                     Platform.runLater(() -> displayChosenFiles());
                     return null;
-                    
+
                 }
-                
+
             };
             infoFileTransferLabel.setText("Filer läggs till..vänligen vänta...");
             new Thread(longRunningTask).start();
@@ -272,6 +269,7 @@ public class FolderContentPageController implements Initializable {
         oList = FXCollections.observableArrayList(files);
         for (Document file : oList) {
             VBox vBox = new VBox();
+            vBox.setUserData(file.getName());
             vBox.setAlignment(Pos.TOP_CENTER);
             Label fileName = new Label(file.getName() + "." + file.getType());
             fileName.setAlignment(Pos.CENTER);
@@ -355,7 +353,7 @@ public class FolderContentPageController implements Initializable {
                 typeLabel.setText(filesToLink.get(0).getType() + " " + "fil");
                 if (filesToLink.get(0).getSize() > 1000000) {
                     int fileSize = (filesToLink.get(0).getSize() / 1000) / 1000;
-                    
+
                     sizeLabel.setText(String.valueOf(fileSize) + " MB");
                 } else {
                     sizeLabel.setText(String.valueOf(filesToLink.get(0).getSize() / 1000) + " KB");
@@ -387,7 +385,7 @@ public class FolderContentPageController implements Initializable {
                         newLabel.setOnMouseClicked(new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent mouseEvent) {
-                                System.out.println(newLabel.getText().substring(1));
+                                // System.out.println(newLabel.getText().substring(1));
                                 searchBox.setText(newLabel.getText().substring(1));
                                 //searchBox.getEventDispatcher();
                                 searchBox.fireEvent(new KeyEvent(KeyEvent.KEY_PRESSED, "", "", KeyCode.ENTER, true, true, true, true));
@@ -484,45 +482,43 @@ public class FolderContentPageController implements Initializable {
         }
     }
 
-        @FXML
+    @FXML
     private void createFileButtonAction(ActionEvent event) throws IOException {
-        
+
         final Formatter x;
-        
-        
-        try{
+
+        try {
             x = new Formatter("text.txt");
             System.out.println("file created");
-            
+
             ProcessBuilder pb = new ProcessBuilder("Notepad.exe", "text.txt");
             pb.start();
-            
+
             //windowClosed(pb);
-            
-        }catch(FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             System.out.println("Error, alas!!");
         }
-        
+
     }
-    
-//        public void windowClosed(ProcessBuilder pb) {
-//        File encryptedFile = new File(dir + "/src/savedFiles/" + doc.getName()+ ".encrypted"); //copypaste "doc.getName" ska bytas ut
-// try {
-//                    
-//                    //Call to encryption method file processor whitch uses "AES" algorithm
-//                    fileProcessor(Cipher.ENCRYPT_MODE,key,source,encryptedFile);  //"source" ska bytas ut mot path till filen
-//                    
-//                    //Delete the original one
-//                    source.delete();
-//                    
-//                    //just to check if the encryption done!
-//                    System.out.println("Encrypted Successfully!");    
-//                } 
-//                catch (Exception ex) {
-//                    System.out.println(ex.getMessage());
-//                }
-//    }
-        
+
+    @FXML
+    private void linkedFileClickedOn(MouseEvent event) throws IOException {
+        if (!(listToLink.getSelectionModel().getSelectedIndex() == -1)) {
+            displayChosenFiles();
+            ArrayList<Document> files = DBConnection.selectFromFiles();
+            for (Document doc : files) {
+                if (doc.getName().equals(listToLink.getSelectionModel().getSelectedItem())) {
+                    for (Node box : gridPane.getChildren()) {
+                        if (doc.getName().equals(box.getUserData())) {
+                            box.fireEvent(event);
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
@@ -544,23 +540,22 @@ public class FolderContentPageController implements Initializable {
         displayChosenFiles();
 
         cleanSearchLabel.hoverProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean show) -> {
-                            if (show) {
-                                //cleanSearchLabel.setStyle("-fx-background-color:#fffc51; -fx-border-width:3; -fx-border-color: #e2e2e2");
-                                cleanSearchLabel.setTextFill(Color.CADETBLUE);
-                            } else {
-                                //cleanSearchLabel.setStyle("-fx-background-color:#c1c1c1; -fx-border-width:3; -fx-border-color: #e2e2e2");
-                                cleanSearchLabel.setTextFill(Color.BLACK);
-                               
-                            }
-                        });
-                        cleanSearchLabel.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent mouseEvent) {
-                                displayChosenFiles();
-                                searchBox.setText("");
-                            }
-                        });
+            if (show) {
+                //cleanSearchLabel.setStyle("-fx-background-color:#fffc51; -fx-border-width:3; -fx-border-color: #e2e2e2");
+                cleanSearchLabel.setTextFill(Color.CADETBLUE);
+            } else {
+                //cleanSearchLabel.setStyle("-fx-background-color:#c1c1c1; -fx-border-width:3; -fx-border-color: #e2e2e2");
+                cleanSearchLabel.setTextFill(Color.BLACK);
 
+            }
+        });
+        cleanSearchLabel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                displayChosenFiles();
+                searchBox.setText("");
+            }
+        });
 
     }
 
@@ -593,6 +588,6 @@ public class FolderContentPageController implements Initializable {
         ArrayList<Document> files = DBConnection.getLinkedFiles(a);
         files.stream().filter((doc) -> (doc.getId() != filesToLink.get(0).getId())).forEachOrdered((doc) -> {
             linkedFilesObs.add(doc.getName());
-        }); 
+        });
     }
 }
