@@ -29,3 +29,66 @@ and open the template in the editor.
     -fx-effect: null;
 }
 
+#addFileButton{
+    -fx-background-radius: 200;
+    -fx-background-color:  #fcfe6c;
+    -fx-border-radius:200;
+    -fx-border-width: 1;
+    -fx-border-color:black;
+}
+
+
+#addFileButton:hover{
+    -fx-background-radius: 200;
+    -fx-background-color: black;
+    -fx-border-radius:200;
+    -fx-cursor: hand;
+    -fx-text-fill:white;
+}
+
+#addFileButton:active{
+     -fx-background-color: #fcfe6c;
+}
+
+#createFileButton{
+    -fx-background-radius: 200;
+    -fx-background-color:  #fcfe6c;
+    -fx-border-radius:200;
+    -fx-border-width: 1;
+    -fx-border-color:black;
+}
+
+
+#createFileButton:hover{
+    -fx-background-radius: 200;
+    -fx-background-color: black;
+    -fx-border-radius:200;
+    -fx-cursor: hand;
+    -fx-text-fill:white;
+}
+
+#createFileButton:active{
+     -fx-background-color: #fcfe6c;
+}
+
+#importButton {
+    -fx-background-color: black;
+    -fx-border-color: #afafaf;
+    -fx-border-width:1;
+    -fx-text-fill:#7a7b7c;
+}
+
+#importButton:hover{
+  -fx-border-color:#fcfe6c;
+  -fx-text-fill:#fcfe6c;
+}
+
+
+#importButton:active{
+  -fx-border-color:#fcfe6c;
+  -fx-text-fill:#fcfe6c;
+}
+
+#fileSizeLabel{
+    -fx-style:bold;
+}

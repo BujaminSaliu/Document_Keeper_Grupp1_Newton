@@ -1,0 +1,74 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 2018-feb-07, 23:34:50
+    Author     : ramonachantaf
+*/
+
+#linkedButton{
+    -fx-background-color: #fcfe6c;
+    -fx-border-width: 1;
+    -fx-border-radius:0;
+    -fx-text-fill: black;
+    -fx-background-radius: 0;
+}
+
+#linkedButton:hover{
+    -fx-text-fill:white ;
+    -fx-background-color:black;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+}
+
+#exportButton{
+    -fx-background-color: #fcfe6c;
+    -fx-border-width: 1;
+    -fx-border-radius:0;
+    -fx-text-fill:black;
+    -fx-background-radius: 0;
+}
+
+#exportButton:hover{
+    -fx-text-fill: white;
+    -fx-background-color:black;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+}
+
+.list-view, .list-view:focused, .list-view:selected {
+    -fx-control-inner-background:  #e2e2e2;
+     -fx-control-inner-background-alt: -fx-control-inner-background;
+      -fx-selection-bar-non-focused: transparent;
+      -fx-border-width:none;
+      -fx-border-color:none;
+      
+}
+
+.list-view .list-cell:filled:selected:focused, .list-view .list-cell:filled:selected {
+    -fx-background-color:black;
+    -fx-effect: null;
+}
+
+.list-view .list-cell:filled:hover {
+    -fx-background-color: transparent;
+    -fx-effect: null;
+}
+
+.scroll-bar:vertical {
+    -fx-pref-width: 16.5;
+    -fx-padding: 3;
+     -fx-color:white;
+}
+
+.scroll-bar:horizontal {
+    -fx-pref-height: 16.5;
+    -fx-padding: 3;
+    -fx-color:white;
+}
+
+.scroll-bar, .scroll-bar:pressed, .scroll-bar:focused {
+    -fx-font-size: 15;
+}

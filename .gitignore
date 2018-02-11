@@ -1,4 +1,5 @@
 /DocumentKeeper/nbproject/private/
+/DocumentKeeper/nbproject/project.properties
 
 hs_err_pid*
 /nbproject/private/
@@ -30,3 +31,4 @@ hs_err_pid*
 /DocumentKeeper/build/
 /DocumentKeeper/dist/
 
+/Test/nbproject/private/

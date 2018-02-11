@@ -3,15 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package fxml;
+package controller;
 
+import static controller.FolderContentPageController.filesToAdd;
 import static controller.FolderContentPageController.oList;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
-
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -24,15 +22,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.stage.FileChooser;
-import javafx.util.Callback;
 import models.Document;
 import models.Tag;
 import repository.DBConnection;
@@ -40,60 +31,58 @@ import repository.DBConnection;
 /**
  * FXML Controller class
  *
- * @author ramonachantaf
+ * @author Grupp 1 & 2 Newton 2018
  */
+
 public class TagPopUpController implements Initializable {
 
     /**
      * Initializes the controller class.
      */
+    
+    public static boolean filesAdded = false;
+
     @FXML
     private ListView<Document> fileListView;
+    
     @FXML
     private ListView<Tag> listViewTags;
+    
     @FXML
-    private Button okButton;
+    private Button importButton;
 
     public ObservableList<Tag> obsListForTags = FXCollections.observableArrayList();
 
     @FXML
     private void addFiles(ActionEvent event) throws IOException {
-
         ObservableList<Document> selectedFiles = fileListView.getItems();
-
         for (Document doc : selectedFiles) {
-
             try {
                 DBConnection.insertIntoFiles(doc.getName(), doc.getSize(), doc.getType(), doc.getPath(), doc.getTags());
+
             } catch (Exception e) {
                 System.out.println(e);
-                Alert alert = new Alert(AlertType.ERROR, "Filerna finns redan lagrade", ButtonType.OK);
+                Alert alert = new Alert(AlertType.WARNING, "Filerna finns redan lagrade", ButtonType.CANCEL);
                 alert.showAndWait();
                 return;
             }
         }
-
+        filesAdded = true;
         ((Node) (event.getSource())).getScene().getWindow().hide();
     }
 
     @FXML
     private void fileItemClicked(javafx.scene.input.MouseEvent event) throws IOException {
         listViewTags.getSelectionModel().clearSelection();
-
         if (!(fileListView.getSelectionModel().getSelectedIndex() == -1)) {
-
             try {
-                for (Tag tag : fileListView.getSelectionModel().getSelectedItem().getTags()) {
-
+                fileListView.getSelectionModel().getSelectedItem().getTags().forEach((tag) -> {
                     listViewTags.getSelectionModel().select(tag);
-
-                }
+                });
             } catch (Exception e) {
                 System.out.println(e);
             }
-
         }
-
     }
 
     @FXML
@@ -101,21 +90,17 @@ public class TagPopUpController implements Initializable {
 
         ObservableList<Document> selectedFiles = fileListView.getSelectionModel().getSelectedItems();
         ObservableList<Tag> selectedTags = listViewTags.getSelectionModel().getSelectedItems();
-
+        
         if (!(fileListView.getSelectionModel().getSelectedIndex() == -1)) {
-
-            for (Document doc : selectedFiles) {
+            selectedFiles.forEach((doc) -> {
                 List tags = new ArrayList<Tag>();
-                for (Tag tag : selectedTags) {
+                selectedTags.forEach((tag) -> {
                     tags.add(tag);
-                }
-
+                });
                 doc.setTags(tags);
-
-            }
-
+            });
         }
-
+        fileListView.refresh();
     }
 
     @Override
@@ -124,13 +109,13 @@ public class TagPopUpController implements Initializable {
         obsListForTags = FXCollections.observableArrayList(tags);
         listViewTags.setItems(obsListForTags);
 
+        oList.addAll(filesToAdd);
         fileListView.setItems(oList);
-
         fileListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
         listViewTags.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         fileListView.scrollTo(0);
         fileListView.getSelectionModel().select(0);
 
     }
-
 }

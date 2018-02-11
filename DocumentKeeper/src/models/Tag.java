@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  *
- * @author ramonachantaf
+ * @author Grupp 1 & 2 Newton 2018
  */
 public class Tag implements Serializable {
     
@@ -54,6 +54,6 @@ public class Tag implements Serializable {
     @Override
      public String toString(){ 
        //System.out.print(this.getName());
-        return this.getName(); 
+        return "#"+this.getName(); 
     }
 }
